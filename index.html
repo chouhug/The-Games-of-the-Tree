@@ -285,6 +285,9 @@ h1{font:900 clamp(26px,4vw,36px)/1.05 "Noto Sans TC",sans-serif;margin:0 0 4px;t
 .guser{display:flex;align-items:center;gap:10px}.guser img{width:36px;height:36px;border-radius:50%}.guser span{flex:1;display:flex;flex-direction:column;min-width:0}.guser small{color:var(--soft);font-size:12px;overflow:hidden;text-overflow:ellipsis}
 .guser button{min-height:34px;padding:0 12px;background:var(--bg);color:var(--ink)}
 .gconf{background:#fff4e0;border:2px solid #ffb36b;border-radius:12px;padding:10px;display:flex;flex-direction:column;gap:6px}.gconf p{font-size:13px;line-height:1.5}
+.admg{display:flex;flex-direction:column;gap:6px;border-top:1px solid #e4ded2;padding-top:8px}.admg>b{font-size:13px;color:#b23a48}
+.admg>div{display:flex;flex-wrap:wrap;gap:6px}.admg button{min-height:34px!important;padding:0 10px;border-radius:10px;background:#2a2a2a;color:#fff;font-size:12px;font-weight:800}
+#admtab{color:#b23a48!important}
 .dqb{background:#e0761a;box-shadow:0 4px 0 #a5520c,0 6px 14px rgba(0,0,0,.2)}
 .dqbox{width:min(440px,100%)}
 #dqlist{display:flex;flex-direction:column;gap:8px}
@@ -629,7 +632,7 @@ textarea{width:100%;font:13px/1.4 ui-monospace,monospace;border-radius:12px;bord
         <div class="tkzoom"><button class="bnt tbn" type="button" title="一次升級幾級">x1</button><button id="tknext" class="nx">找可升級的<i id="tknc"></i></button><button id="tkzc">回到中心</button><div class="zz"><button id="tkzi" aria-label="放大">＋</button><button id="tkzo" aria-label="縮小">－</button></div></div></div>
       <div class="tkmsg" id="tkmsg" aria-live="polite"></div>
     </div></div>
-    <div class="tk" id="mnp" hidden><div class="tkbox mnbox" role="dialog" aria-label="選單"><div class="tkhead"><div><b>大樹總會</b><small>成就和設定，所有小遊戲共用</small></div><button id="mnx" class="tkxb" aria-label="關閉">✕</button></div><div class="mtabs"><button data-m="ach" class="on">成就<span class="dot" id="achDot"></span></button><button data-m="set">設定</button></div><section class="mtab" id="m-ach">
+    <div class="tk" id="mnp" hidden><div class="tkbox mnbox" role="dialog" aria-label="選單"><div class="tkhead"><div><b>大樹總會</b><small>成就和設定，所有小遊戲共用</small></div><button id="mnx" class="tkxb" aria-label="關閉">✕</button></div><div class="mtabs"><button data-m="ach" class="on">成就<span class="dot" id="achDot"></span></button><button data-m="set">設定</button><button data-m="adm" id="admtab" hidden>管理員</button></div><section class="mtab" id="m-ach">
         <p class="soft">達成後點「領取」，獎勵是樹液和寶石，大樹越大、領到的樹液越多。</p>
         <div class="achs" id="achs"></div>
       </section><section class="mtab" id="m-set" hidden>
@@ -642,7 +645,7 @@ textarea{width:100%;font:13px/1.4 ui-monospace,monospace;border-radius:12px;bord
         <div class="row2"><button id="exp">產生並複製</button><button id="imp">讀取存檔碼</button></div>
         <div class="row"><span>新手教學</span><button id="tutre">重看一次</button></div>
         <div class="foot"><span>進度會自動存在這個瀏覽器</span><button id="reset">全部重來</button></div>
-      </section></div></div>
+      </section><section class="mtab" id="m-adm" hidden><div id="admbox"></div></section></div></div>
     <div class="tk" id="dqp" hidden><div class="tkbox dqbox" role="dialog" aria-label="每日委託"><div class="tkhead"><div><b>每日委託</b><small>每天換新的三件事，跨不同的小遊戲。獎勵會送到別的遊戲用得上的地方</small></div><button id="dqx" class="tkxb" aria-label="關閉">✕</button></div><div id="dqlist"></div></div></div>
     <div class="tk" id="sp" hidden><div class="tkbox spbox" role="dialog" aria-label="樹靈">
       <div class="tkhead"><div><b>樹靈</b><small id="spsub"></small></div><button id="spx" class="tkxb" aria-label="關閉">✕</button></div>
@@ -2924,7 +2927,7 @@ function dqUI(){if($('dqp').hidden)return;const d=dqEnsure(),all=d.q.every(q=>q.
    +'<div class="dqi bonus'+(all&&!d.bonus?' done':d.bonus?' got':'')+'"><div><b>三件都完成</b><small>'+rewTxt(DQBON())+'</small></div><button data-dqb="1"'+(all&&!d.bonus?'':' disabled')+'>'+(d.bonus?'已領取':'領取')+'</button></div>'
    +'<p class="soft dqnote">明天會換新的委託（台灣時間午夜）</p>'
    +'<div class="loop"><b>大樹總會的循環</b>'+[['疊疊樂','陽光','大樹澆水、冒險充能'],['大樹','長大','樹根變深，挖礦能挖更下面'],['挖礦','水・化石・礦石','大樹澆水、孵樹靈、升級翼種'],['樹靈','出戰','冒險打得更遠'],['冒險','養分・化石','大樹 Lv 20 起澆水、樹靈突破'],['淨化的浮島','加成','每座島強化一個遊戲']].map(r=>'<div><span>'+r[0]+'</span><i>→ '+r[1]+' →</i><em>'+r[2]+'</em></div>').join('')+'</div>'}
-function mnInit(){$('tutre').addEventListener('click',tutRestart);$('mnbtn').addEventListener('click',()=>{$('mnp').hidden=false;ui();SFX.click()});$('mnx').addEventListener('click',()=>{$('mnp').hidden=true;SFX.click()});
+function mnInit(){$('tutre').addEventListener('click',tutRestart);$('mnbtn').addEventListener('click',()=>{$('mnp').hidden=false;ui();admUI();SFX.click()});$('mnx').addEventListener('click',()=>{$('mnp').hidden=true;SFX.click()});
   $('mnp').addEventListener('click',e=>{if(e.target.id==='mnp')$('mnp').hidden=true});
   for(const b of document.querySelectorAll('.mtabs button'))b.addEventListener('click',()=>{for(const x of document.querySelectorAll('.mtabs button'))x.classList.toggle('on',x===b);
     for(const t of document.querySelectorAll('.mtab'))t.hidden=t.id!=='m-'+b.dataset.m;SFX.click()})}
@@ -3004,7 +3007,7 @@ async function cloudInit(){cloudUI();if(!FB_CONF||!CLOUD_OK)return;
     const a=app.initializeApp(FB_CONF);FB={auth:auth.getAuth(a),db:fs.getFirestore(a),A:auth,F:fs};
     FB.auth.languageCode='zh-TW';
     auth.getRedirectResult(FB.auth).catch(()=>{});
-    auth.onAuthStateChanged(FB.auth,u=>{cloudUser=u;cloudState='';cloudUI();if(u)cloudPull()});
+    auth.onAuthStateChanged(FB.auth,u=>{cloudUser=u;cloudState='';cloudUI();admUI();if(u)cloudPull()});
   }catch(e){cloudState='err';cloudUI()}}
 async function cloudLogin(){if(!FB)return;const p=new FB.A.GoogleAuthProvider();
   try{await FB.A.signInWithPopup(FB.auth,p)}catch(e){if(e&&(e.code==='auth/popup-blocked'||e.code==='auth/operation-not-supported-in-this-environment')){try{await FB.A.signInWithRedirect(FB.auth,p)}catch(_){cloudState='popup';cloudUI()}}else if(!(e&&e.code==='auth/popup-closed-by-user')){cloudState='popup';cloudUI()}}}
@@ -3026,6 +3029,53 @@ $('cloudbox')&&$('cloudbox').addEventListener('click',e=>{const b=e.target.close
 setInterval(()=>{if(cloudUser&&cloudState!=='conflict')cloudPush()},180000);   // 每 3 分鐘自動存一次（Firebase 免費額度每天 2 萬次寫入，存太頻繁很快會用完）
 document.addEventListener('visibilitychange',()=>{if(document.hidden&&cloudUser&&cloudState!=='conflict')cloudPush()});
 setInterval(()=>{if(cloudUser&&!$('mnp').hidden)cloudUI()},10000);
+
+/* ================= 管理員介面（製作人測試用） =================
+   GitHub 版：用製作人的 Google 帳號登入才會出現。Claude 預覽、本機測試：直接出現（只有製作人看得到）。
+   注意：這是單機遊戲，檢查放在瀏覽器端，只用來方便測試，不是防作弊。 */
+const ADMIN_EMAILS=['chouhug@gmail.com'];
+const isAdmin=()=>!CLOUD_OK||(cloudUser&&ADMIN_EMAILS.includes((cloudUser.email||'').toLowerCase()));
+const ADM=[
+ ['資源',[['全部資源 +1M','res',1e6],['全部資源 +1B','res',1e9],['全部資源 +1T','res',1e12],['寶石 +1000','gems',1000],['化石 +500','fossil',500],['古代種子 +10','aseed',10],['養分 +100K','nutr',1e5],['星塵 +100','stars',100],['每種礦 +1000','ore',1000],['疊疊樂金幣 +1T','coins',1e12],['資源歸零','zero',0]]],
+ ['大樹',[['大樹 -1 級','tree',-1],['大樹 +1 級','tree',1],['大樹 +10 級','tree',10],['大樹滿級','tree',999],['大樹回到 Lv 0','tree',-999],['結滿果實','fruit',0]]],
+ ['升級樹',[['全部點滿','tlmax',0],['全部重置','tlreset',0]]],
+ ['疊疊樂',[['收益 +10 級','slv',10],['收益 +50 級','slv',50],['解鎖全部外觀','skins',0],['到過全部區域','zones',0],['升級全部點滿','upmax',0]]],
+ ['挖礦',[['鑽頭升級全滿','mupmax',0],['開放全部礦層','mlayers',0],['挖礦升級歸零','mupzero',0]]],
+ ['樹靈',[['獲得全部樹靈','spall',0],['樹靈全部 +5 級','splv',5],['樹靈全部滿級','splv',99],['孵化立刻完成','hatch',0]]],
+ ['冒險',[['淨化全部區域','advall',0],['翼種全部滿級','wingmax',0],['冒險進度重置','advreset',0]]],
+ ['時間',[['快轉 1 小時（離線收益）','off',1],['快轉 8 小時','off',8],['委託換新的一天','dqnew',0],['委託全部完成','dqdone',0]]],
+ ['其他',[['成就全部達成','achall',0],['重看新手教學','tut',0],['備份目前存檔','bak',0],['還原備份','restore',0]]]];
+function admUI(){$('admtab').hidden=!isAdmin();const el=$('admbox');if(!el||!isAdmin()){if(el)el.innerHTML='';return}
+  el.innerHTML='<p class="soft">製作人測試工具。按下去馬上生效，不會跳確認，重要進度先按「備份目前存檔」。</p>'+ADM.map(g=>'<div class="admg"><b>'+g[0]+'</b><div>'+g[1].map((b,i)=>'<button data-adm="'+b[1]+'" data-v="'+b[2]+'">'+b[0]+'</button>').join('')+'</div></div>').join('')
+   +'<div class="admg"><b>狀態</b><p class="soft" id="admst"></p></div>';admStat()}
+function admStat(){const e=$('admst');if(e)e.textContent='大樹 Lv '+S.tree.lv+'・疊疊樂 Lv '+S.lv+'・最高區域 '+S.maxSc+'・礦層 '+S.mine.maxL+'・冒險 '+((S.adv&&S.adv.cl)||0)+' 區・樹靈 '+Object.keys(S.sp.own).length+' 隻・繪圖 '+(GLON?'WebGL':'2D')}
+function admDo(k,v){v=+v;const allOre=()=>{for(const o of ORES)S.ore[o[0]]=(S.ore[o[0]]||0)+v};
+  switch(k){
+  case'res':S.sap+=v;S.sun+=v;S.water+=v;S.nutr=(S.nutr||0)+v;S.coins+=v;break;
+  case'gems':S.gems+=v;break;case'fossil':S.fossil+=v;break;case'aseed':S.aseed+=v;break;case'nutr':S.nutr=(S.nutr||0)+v;break;case'stars':S.stars+=v;break;case'coins':S.coins+=v;break;case'ore':allOre();break;
+  case'zero':S.sap=S.sun=S.water=S.nutr=S.coins=0;S.ore={};break;
+  case'tree':S.tree.lv=Math.max(0,Math.min(TMAX,S.tree.lv+v));S.tree.p=0;break;
+  case'fruit':S.fruit=fruitCap();break;
+  case'tlmax':for(const n of TL)S.tl[n.id]=n.m;if(!S.sp.nest.length)S.sp.nest=[null];break;
+  case'tlreset':S.tl={};break;
+  case'slv':S.lv+=v;break;case'skins':S.lv=Math.max(S.lv,skinLv(SK.length-1));break;case'zones':S.maxSc=SC.length-1;break;
+  case'upmax':for(const u of UP)S.u[u[0]]=u[5];break;
+  case'mupmax':for(const u of MUP)S.mine[u[0]]=u[3];break;case'mupzero':for(const u of MUP)S.mine[u[0]]=0;break;
+  case'mlayers':S.mine.maxL=ZONES.length-1;break;
+  case'spall':for(const sp of SPEC)if(!S.sp.own[sp.id])S.sp.own[sp.id]={lv:1,aw:0};break;
+  case'splv':for(const id in S.sp.own)S.sp.own[id].lv=Math.min(SPMAX,S.sp.own[id].lv+v);break;
+  case'hatch':for(const n of S.sp.nest)if(n)n.t0=0;break;
+  case'advall':S.adv=S.adv||{};S.adv.cl=AZ.length;break;
+  case'wingmax':S.adv=S.adv||{};S.adv.wing={};for(const w of WING)S.adv.wing[w[0]]=w[5];break;
+  case'advreset':S.adv={team:(S.adv&&S.adv.team)||[]};break;
+  case'off':offline(v*3600);break;
+  case'dqnew':S.dq=null;dqEnsure();break;case'dqdone':{const d=dqEnsure();for(const q of d.q)q.p=q.n}break;
+  case'achall':for(const a of ACH)S.done[a[0]]=1;break;
+  case'tut':S.tut2=0;S.tutH={};$('mnp').hidden=true;break;
+  case'bak':try{localStorage.setItem('stackcash_admbak',JSON.stringify(S));hbanner('已備份目前存檔')}catch(e){}save();return;
+  case'restore':try{const b=localStorage.getItem('stackcash_admbak');if(!b){hbanner('還沒有備份');return}localStorage.setItem('stackcash3',b);location.reload()}catch(e){}return}
+  SPD=true;save();ui();hubUI();if(typeof mui==='function'&&view==='mine')mui();admStat();hbanner('管理員：已執行');SFX.click()}
+$('admbox').addEventListener('click',e=>{const b=e.target.closest('button[data-adm]');if(!b||!isAdmin())return;admDo(b.dataset.adm,b.dataset.v)});
 
 /* ================= 第四階段（試玩）：樹靈冒險 =================
    島到島的遠征：從大樹出發，在雲海地圖上選路線，乘翼種滑翔到下一座浮島，
@@ -3524,7 +3574,7 @@ const ro=new ResizeObserver(()=>{size();fitAll();if(state!=='play')resetTower()}
 size();resetTower();ro.observe(stage);
 setInterval(()=>{gainSap(sapRate());if(view==='hub')hubUI()},1000);
 if(!S.sapInit){S.sapInit=1;const g=Math.ceil(sapRate()*900);gainSap(g);setTimeout(()=>hbanner('大樹有了自己的貨幣「樹液」！送你 '+fmt(g)+' 樹液，升級樹改用它來買'),1200)}
-spInit();btInit();dqInit();mnInit();tutInit();cloudInit();fruitTick();hsize();offline((Date.now()-S.last)/1000);daily();show('hub');requestAnimationFrame(frame);requestAnimationFrame(hframe);requestAnimationFrame(mframe);
+spInit();btInit();dqInit();mnInit();tutInit();cloudInit();admUI();fruitTick();hsize();offline((Date.now()-S.last)/1000);daily();show('hub');requestAnimationFrame(frame);requestAnimationFrame(hframe);requestAnimationFrame(mframe);
 }
 </script>
 </body>
