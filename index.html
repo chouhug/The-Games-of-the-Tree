@@ -241,7 +241,8 @@ h1{font:900 clamp(26px,4vw,36px)/1.05 "Noto Sans TC",sans-serif;margin:0 0 4px;t
 .tbtns{flex-direction:column;align-items:center!important;gap:10px}
 .tb3{display:flex;align-items:flex-end;gap:12px}
 .tbtns.mob{width:100%;justify-content:space-between;pointer-events:none;padding-bottom:44px}.tbtns.mob>*{pointer-events:auto}
-@media(max-width:600px){.hhint{display:none}.vbtn{width:46px;height:46px;padding:0;font-size:20px;display:flex;align-items:center;justify-content:center}.vbtn span{display:none}}
+#v-hub .hhint{display:none}
+@media(max-width:600px){.vbtn{width:46px;height:46px;padding:0;font-size:20px;display:flex;align-items:center;justify-content:center}.vbtn span{display:none}}
 .tkb{border-radius:99px!important;flex-direction:row!important;gap:6px;height:38px;background:#8b5cf6;color:#fff;font-weight:900;font-size:14px;padding:0 14px!important;box-shadow:0 4px 0 #5b33c4,0 6px 14px rgba(0,0,0,.2)}
 .tkb i{font-style:normal;background:#ef476f;border-radius:99px;min-width:20px;height:20px;font:800 12px/20px "Baloo 2",sans-serif}
 .tkb i:empty{display:none}
@@ -285,6 +286,16 @@ h1{font:900 clamp(26px,4vw,36px)/1.05 "Noto Sans TC",sans-serif;margin:0 0 4px;t
 .guser{display:flex;align-items:center;gap:10px}.guser img{width:36px;height:36px;border-radius:50%}.guser span{flex:1;display:flex;flex-direction:column;min-width:0}.guser small{color:var(--soft);font-size:12px;overflow:hidden;text-overflow:ellipsis}
 .guser button{min-height:34px;padding:0 12px;background:var(--bg);color:var(--ink)}
 .gconf{background:#fff4e0;border:2px solid #ffb36b;border-radius:12px;padding:10px;display:flex;flex-direction:column;gap:6px}.gconf p{font-size:13px;line-height:1.5}
+ #admfab{position:fixed;left:10px;bottom:90px;z-index:120;width:46px;height:46px;border-radius:50%;background:#b23a48;color:#fff;font-size:22px;box-shadow:0 4px 12px rgba(0,0,0,.3);display:flex;align-items:center;justify-content:center;padding:0}
+#admfab[hidden],#admd[hidden]{display:none}
+#admd{position:fixed;top:0;right:0;bottom:0;z-index:121;width:min(340px,92vw);background:#fbf8f1;color:#1d1f24;box-shadow:-8px 0 30px rgba(0,0,0,.3);display:flex;flex-direction:column;animation:admin .2s ease-out}
+@keyframes admin{from{transform:translateX(100%)}}
+.admh{display:flex;align-items:center;justify-content:space-between;padding:12px 14px;background:#b23a48;color:#fff}.admh b{font-size:16px}.admh button{background:rgba(255,255,255,.2);color:#fff;min-height:34px;width:34px;padding:0;border-radius:50%}
+#admbox{flex:1;overflow:auto;padding:10px 14px 30px;display:flex;flex-direction:column;gap:10px;--soft:#6b6f78}
+#admbox .soft{color:#6b6f78;font-size:12px;margin:0}
+.admg button.tg{background:#e6e0d4;color:#2a2a2a}.admg button.tg.on{background:#2f9e5a;color:#fff}
+.admset{display:grid!important;grid-template-columns:1fr 1fr;gap:6px}.admset label{display:flex;flex-direction:column;font-size:11px;color:#6b6f78;gap:2px}.admset input{min-height:32px;border:1px solid #d8d2c4;border-radius:8px;padding:0 8px;font:700 13px "Baloo 2",sans-serif;width:100%}.admset button{grid-column:1/-1}
+#admfps{position:fixed;left:10px;top:10px;z-index:130;background:rgba(0,0,0,.7);color:#7dffb0;font:800 12px monospace;padding:3px 8px;border-radius:6px;pointer-events:none}
 .admg{display:flex;flex-direction:column;gap:6px;border-top:1px solid #e4ded2;padding-top:8px}.admg>b{font-size:13px;color:#b23a48}
 .admg>div{display:flex;flex-wrap:wrap;gap:6px}.admg button{min-height:34px!important;padding:0 10px;border-radius:10px;background:#2a2a2a;color:#fff;font-size:12px;font-weight:800}
 #admtab{color:#b23a48!important}
@@ -603,6 +614,9 @@ textarea{width:100%;font:13px/1.4 ui-monospace,monospace;border-radius:12px;bord
 </style>
 </head>
 <body>
+<button id="admfab" hidden aria-label="管理員工具">🛠</button>
+<aside id="admd" hidden aria-label="管理員工具"><div class="admh"><b>管理員工具</b><button id="admx" aria-label="關閉">✕</button></div><div id="admbox"></div></aside>
+
 <div class="wrap">
  <section id="v-hub">
   <div class="hubstage" id="hstage" aria-label="大樹 3D 畫面，拖曳可以旋轉"><canvas id="hcv"></canvas>
@@ -632,7 +646,7 @@ textarea{width:100%;font:13px/1.4 ui-monospace,monospace;border-radius:12px;bord
         <div class="tkzoom"><button class="bnt tbn" type="button" title="一次升級幾級">x1</button><button id="tknext" class="nx">找可升級的<i id="tknc"></i></button><button id="tkzc">回到中心</button><div class="zz"><button id="tkzi" aria-label="放大">＋</button><button id="tkzo" aria-label="縮小">－</button></div></div></div>
       <div class="tkmsg" id="tkmsg" aria-live="polite"></div>
     </div></div>
-    <div class="tk" id="mnp" hidden><div class="tkbox mnbox" role="dialog" aria-label="選單"><div class="tkhead"><div><b>大樹總會</b><small>成就和設定，所有小遊戲共用</small></div><button id="mnx" class="tkxb" aria-label="關閉">✕</button></div><div class="mtabs"><button data-m="ach" class="on">成就<span class="dot" id="achDot"></span></button><button data-m="set">設定</button><button data-m="adm" id="admtab" hidden>管理員</button></div><section class="mtab" id="m-ach">
+    <div class="tk" id="mnp" hidden><div class="tkbox mnbox" role="dialog" aria-label="選單"><div class="tkhead"><div><b>大樹總會</b><small>成就和設定，所有小遊戲共用</small></div><button id="mnx" class="tkxb" aria-label="關閉">✕</button></div><div class="mtabs"><button data-m="ach" class="on">成就<span class="dot" id="achDot"></span></button><button data-m="set">設定</button></div><section class="mtab" id="m-ach">
         <p class="soft">達成後點「領取」，獎勵是樹液和寶石，大樹越大、領到的樹液越多。</p>
         <div class="achs" id="achs"></div>
       </section><section class="mtab" id="m-set" hidden>
@@ -645,7 +659,7 @@ textarea{width:100%;font:13px/1.4 ui-monospace,monospace;border-radius:12px;bord
         <div class="row2"><button id="exp">產生並複製</button><button id="imp">讀取存檔碼</button></div>
         <div class="row"><span>新手教學</span><button id="tutre">重看一次</button></div>
         <div class="foot"><span>進度會自動存在這個瀏覽器</span><button id="reset">全部重來</button></div>
-      </section><section class="mtab" id="m-adm" hidden><div id="admbox"></div></section></div></div>
+      </section></div></div>
     <div class="tk" id="dqp" hidden><div class="tkbox dqbox" role="dialog" aria-label="每日委託"><div class="tkhead"><div><b>每日委託</b><small>每天換新的三件事，跨不同的小遊戲。獎勵會送到別的遊戲用得上的地方</small></div><button id="dqx" class="tkxb" aria-label="關閉">✕</button></div><div id="dqlist"></div></div></div>
     <div class="tk" id="sp" hidden><div class="tkbox spbox" role="dialog" aria-label="樹靈">
       <div class="tkhead"><div><b>樹靈</b><small id="spsub"></small></div><button id="spx" class="tkxb" aria-label="關閉">✕</button></div>
@@ -1114,7 +1128,7 @@ function land(){
     shake=.25;buzz(60);
     if(lives>0){lives--;combo=0;banner((hs(5)&&lives===0?'小幫手':'安全網')+'接住了！剩 '+lives+' 次');SFX.net();hud();setTimeout(()=>{if(state==='play')spawn()},350);return}
     gameOver();return}
-  const perfect=Math.abs(off)<pWin();
+  const perfect=APERF()||Math.abs(off)<pWin();
   const SWX=swA()*Math.sin(T*1.7);
   const nb={x:perfect?p.x:f.x-SWX,w:f.w,g:f.gold};tower.push(nb);
   combo=perfect?combo+1:0;
@@ -1714,7 +1728,7 @@ function daily(){const d=new Date(),k=dkey(d);if(S.day===k)return;
   S.streak=S.day===dkey(new Date(d-864e5))?S.streak+1:1;S.day=k;const v=Math.ceil(per()*30*Math.min(S.streak,7)),gg=1+(S.streak>=7?2:S.streak>=3?1:0);earn(v);S.gems+=gg;save();
   queue('每日登入獎勵','連續登入第 '+S.streak+' 天<br><b>$'+fmt(v)+'</b><br>寶石 +'+gg+'<br><small>連續越多天獎勵越高，最多 7 倍</small>','領取');ui()}
 let lastTick=Date.now(),tick=0;
-setInterval(()=>{const now=Date.now(),dt=(now-lastTick)/1000;lastTick=now;fruitTick();if(dt<=60)cartTick(dt);if(view==='mine'&&dt<=60)mui();
+setInterval(()=>{const now=Date.now(),dt0=(now-lastTick)/1000;lastTick=now;const dt=dt0>60?dt0:dt0*TS();fruitTick();if(dt<=60)cartTick(dt);if(view==='mine'&&dt<=60)mui();
   if(dt>60){offline(dt);daily();return}
   const sa=TA('sauto');if(sa){const g=SUNB**sceneOf(S.best)*sa*sunMult()*dt;S.sun+=g;S.sunAll+=g}
   const r=autoRate();if(r){earn(r*dt);light();hpop.push({t:0,s:'+$'+(r<10?r.toFixed(1):fmt(r))})}if(++tick%5===0){save();checkAch()}},1000);
@@ -1809,7 +1823,7 @@ const RGBC={};function rgbOf(h){return RGBC[h]||(RGBC[h]=h[0]==='#'?[parseInt(h.
 // b：亮度（1＝原色），fz：鏡頭距離（越遠越融進天色）
 const fogOf=fz=>Math.max(0,Math.min(.18,(fz-(VIEW?12:cam3.dist*1.05))/70));
 function lit(h,b=1,fz=0,fo){const c=rgbOf(h),f=fo!=null?fo:fogOf(fz);const o=c.map((v,i)=>{let x=v*b*TINT[i];if(b>1)x+=(255-x)*(b-1)*.25;return Math.round(Math.min(255,x*(1-f)+FOGC[i]*f))});return'rgb('+o+')'}
-function lightSetup(){const h=new Date().getHours();NIGHT=h<6||h>=19;const eve=h>=17&&h<19;
+function lightSetup(){const h=typeof ADMF!=='undefined'&&ADMF.hour>=0&&isAdmin()?ADMF.hour:new Date().getHours();NIGHT=h<6||h>=19;const eve=h>=17&&h<19;
   const nt=NIGHT?[.74,.8,1]:eve?[1.06,.93,.84]:[1,1,1];if(nt.join()!==TINT.join()){TINT=nt;LV++}EVE=eve;FOGC=NIGHT?[38,52,108]:eve?[255,212,178]:[205,232,250];
   const a=C(0,3,0),b=C(LD[0]*3,3+LD[1]*3,LD[2]*3);if(a[2]>NEAR&&b[2]>NEAR){const A=PJ(a),B=PJ(b);const dx=B[0]-A[0],dy=B[1]-A[1],l=Math.hypot(dx,dy);if(l>.5)LS=[dx/l,dy/l]}}
 // 地上的接觸陰影：往背光的方向偏一點
@@ -2123,11 +2137,11 @@ function drawCan(x,y,a){hx.save();hx.translate(x,y);hx.rotate(a);
 // 三顆按鈕永遠浮在樹頂上方
 let htopH=0;
 function placeBtns(dt=0){if(VIEW)return;const b=$('tbtns'),tp=P(0,TREE.top,0);let top=tp[1],rt=tp[0],bot=tp[1];for(const L of TREE.leaves){const q=P(L.c[0],L.c[1],L.c[2]);top=Math.min(top,q[1]-L.r*q[3]);rt=Math.max(rt,q[0]+L.r*q[3]);bot=Math.max(bot,q[1]+L.r*q[3])}
-  // 手機（窄畫面）：上排按鈕固定在資訊卡下面、澆水那排固定在最下面，中間整塊留給大樹；樹太大就自動拉遠
-  const mob=HW<600;b.classList.toggle('mob',mob);
+  // 上排按鈕固定在資訊卡下面、澆水那排固定在最下面，中間整塊留給大樹；樹太大就自動拉遠（手機和電腦都一樣，按鈕不會再擋到樹）
+  const mob=true;b.classList.toggle('mob',mob);
   if(mob){const r1=b.firstElementChild,r2=b.lastElementChild;b.style.transform='none';b.style.height=HH+'px';r1.style.marginTop=htopH+'px';
     const req=htopH+r1.offsetHeight+14,low=HH-r2.offsetHeight-56;
-    if(top<req||bot>low+40)cam3.fit=Math.min(3.4,cam3.fit+dt*.8);else if(top>req+60&&bot<low-20)cam3.fit=Math.max(1,cam3.fit-dt*.4);return}
+    if(top<req||bot>low)cam3.fit=Math.min(4,cam3.fit+dt*.8);else if(top>req+60&&bot<low-20)cam3.fit=Math.max(1,cam3.fit-dt*.4);return}
   b.style.height='';b.firstElementChild.style.marginTop='';
   // 樹冠太高、按鈕放不下時，鏡頭自動拉遠一點
   const req=htopH+b.offsetHeight+22;if(top<req)cam3.fit=Math.min(2.4,cam3.fit+dt*.8);else if(top>req+90)cam3.fit=Math.max(1,cam3.fit-dt*.4);
@@ -2443,7 +2457,7 @@ function collect(o,i){
   let got=0,sw=0;for(let k=0;k<n;k++){const r=cargoAdd({t:o,n:1});if(!r)break;got++;if(r===2)sw++}if(!got){cargoFull();return}if(sw){mfloat('丟掉'+mw.swapLast+'，換成'+ORE[o][1]+' +'+got,ORE[o][2]);SFX.coin();return}
   mfloat(ORE[o][1]+' +'+got,ORE[o][2]);SFX.coin();
 }
-function hurt(d,why){if(d<=0)return;mw.hull=Math.max(0,mw.hull-d);mfloat('-'+Math.round(d)+' 外殼','#ff6b5a',MW/2+60);mbanner(why);shake=.2;buzz(40);if(mw.hull<=0)wreck()}
+function hurt(d,why){if(d<=0||GOD())return;mw.hull=Math.max(0,mw.hull-d);mfloat('-'+Math.round(d)+' 外殼','#ff6b5a',MW/2+60);mbanner(why);shake=.2;buzz(40);if(mw.hull<=0)wreck()}
 function wreck(){if(mw.over)return;mw.over=true;const lost=Math.ceil(mw.cargo.length/2);mw.cargo.sort(()=>Math.random()-.5).splice(0,lost);mbanner('外殼撐不住了！緊急拉回地面，掉了一半貨物');SFX.fail();goUp(true)}
 function goUp(force){if(!mw||mw.up||(mw.m<.5&&!force))return;mw.up=.0001;mw.m0=mw.m;SFX.reb();mHeld=false}
 // 回到地面：卸貨，換新的一趟
@@ -2467,7 +2481,7 @@ function mstep(dt){
     let v;if(!inRock&&ratio<STUCK){v=0;mw.stuckT+=dt;if(mw.stuckT>.4&&MT-mw.warnT>2.5){mw.warnT=MT;mbanner('太硬了！鑽頭力量不夠，回地面升級鑽頭');SFX.click()}}
     else{mw.stuckT=0;v=Math.max(inRock?.35:.4,5*mSpeed()*Math.min(2.5,ratio-.45))}
     mw.v+=(v-mw.v)*Math.min(1,dt*8);
-    mw.heat+=((3.5+5/Math.max(.55,ratio))*res*TM('mdig')+(Z.heat||0)*2*res*TM('mheat'))*dt;
+    if(!GOD())mw.heat+=((3.5+5/Math.max(.55,ratio))*res*TM('mdig')+(Z.heat||0)*2*res*TM('mheat'))*dt;
     mw.spin+=dt*(10+mw.v*4);
     if(Math.random()<dt*(18+mw.v*6)){const col=inRock?'#c8c8cc':Z.c;mw.fx.push({x:mDX()+(Math.random()-.5)*30,y:MH*.46,vx:(Math.random()-.5)*240,vy:-60-Math.random()*200,t:0,col,s:3+Math.random()*3})}
     if(inRock&&Math.random()<dt*20)mw.fx.push({x:mDX()+(Math.random()-.5)*16,y:MH*.46,vx:(Math.random()-.5)*300,vy:-Math.random()*240,t:0,col:'#ffe08a',s:2,spark:1});
@@ -3064,47 +3078,76 @@ setInterval(()=>{if(cloudUser&&!$('mnp').hidden)cloudUI()},10000);
    注意：這是單機遊戲，檢查放在瀏覽器端，只用來方便測試，不是防作弊。 */
 const ADMIN_EMAILS=['chouhug@gmail.com'];
 const isAdmin=()=>!CLOUD_OK||(cloudUser&&ADMIN_EMAILS.includes((cloudUser.email||'').toLowerCase()));
+// 開關類的測試設定（只存在這台瀏覽器）
+let ADMF={god:0,perf:0,ts:1,hour:-1,fps:0};try{Object.assign(ADMF,JSON.parse(localStorage.getItem('stackcash_admf')||'{}'))}catch(e){}
+const admSave=()=>{try{localStorage.setItem('stackcash_admf',JSON.stringify(ADMF))}catch(e){}};
+const TS=()=>isAdmin()?ADMF.ts:1,GOD=()=>isAdmin()&&ADMF.god,APERF=()=>isAdmin()&&ADMF.perf;
 const ADM=[
- ['資源',[['全部資源 +1M','res',1e6],['全部資源 +1B','res',1e9],['全部資源 +1T','res',1e12],['寶石 +1000','gems',1000],['化石 +500','fossil',500],['古代種子 +10','aseed',10],['養分 +100K','nutr',1e5],['星塵 +100','stars',100],['每種礦 +1000','ore',1000],['疊疊樂金幣 +1T','coins',1e12],['資源歸零','zero',0]]],
- ['大樹',[['大樹 -1 級','tree',-1],['大樹 +1 級','tree',1],['大樹 +10 級','tree',10],['大樹滿級','tree',999],['大樹回到 Lv 0','tree',-999],['結滿果實','fruit',0]]],
- ['升級樹',[['全部點滿','tlmax',0],['全部重置','tlreset',0]]],
- ['疊疊樂',[['收益 +10 級','slv',10],['收益 +50 級','slv',50],['解鎖全部外觀','skins',0],['到過全部區域','zones',0],['升級全部點滿','upmax',0]]],
- ['挖礦',[['鑽頭升級全滿','mupmax',0],['開放全部礦層','mlayers',0],['挖礦升級歸零','mupzero',0]]],
- ['樹靈',[['獲得全部樹靈','spall',0],['樹靈全部 +5 級','splv',5],['樹靈全部滿級','splv',99],['孵化立刻完成','hatch',0]]],
- ['冒險',[['淨化全部區域','advall',0],['翼種全部滿級','wingmax',0],['冒險進度重置','advreset',0]]],
- ['時間',[['快轉 1 小時（離線收益）','off',1],['快轉 8 小時','off',8],['委託換新的一天','dqnew',0],['委託全部完成','dqdone',0]]],
- ['其他',[['成就全部達成','achall',0],['重看新手教學','tut',0],['備份目前存檔','bak',0],['還原備份','restore',0]]]];
-function admUI(){$('admtab').hidden=!isAdmin();const el=$('admbox');if(!el||!isAdmin()){if(el)el.innerHTML='';return}
-  el.innerHTML='<p class="soft">製作人測試工具。按下去馬上生效，不會跳確認，重要進度先按「備份目前存檔」。</p>'+ADM.map(g=>'<div class="admg"><b>'+g[0]+'</b><div>'+g[1].map((b,i)=>'<button data-adm="'+b[1]+'" data-v="'+b[2]+'">'+b[0]+'</button>').join('')+'</div></div>').join('')
+ ['一鍵',[['全部解鎖（不含資源）','unlockall',0],['全部資源 +1T','res',1e12]]],
+ ['資源',[['全部資源 +1M','res',1e6],['全部資源 +1B','res',1e9],['寶石 +1000','gems',1000],['化石 +500','fossil',500],['古代種子 +10','aseed',10],['養分 +100K','nutr',1e5],['星塵 +100','stars',100],['每種礦 +1000','ore',1000],['疊疊樂金幣 +1T','coins',1e12],['資源歸零','zero',0]]],
+ ['大樹',[['-1 級','tree',-1],['+1 級','tree',1],['+10 級','tree',10],['滿級','tree',999],['回到 Lv 0','tree',-999],['澆滿這一級','tgrow',0],['結滿果實','fruit',0]]],
+ ['升級樹',[['全部點滿','tlmax',0],['全部重置','tlreset',0],['只點滿永恆之枝','tlbranch','e']]],
+ ['疊疊樂',[['收益 +10 級','slv',10],['收益 +50 級','slv',50],['解鎖全部外觀','skins',0],['到過全部區域','zones',0],['升級全部點滿','upmax',0],['疊疊樂歸零','sreset',0]]],
+ ['挖礦',[['鑽頭升級全滿','mupmax',0],['開放全部礦層','mlayers',0],['挖礦升級歸零','mupzero',0],['傳送到 300m','mtp',300],['傳送到 1000m','mtp',1000],['熱度歸零','mcool',0]]],
+ ['樹靈',[['獲得全部樹靈','spall',0],['全部 +5 級','splv',5],['全部滿級','splv',99],['全部覺醒滿','spaw',0],['孵化立刻完成','hatch',0]]],
+ ['冒險',[['淨化全部區域','advall',0],['翼種全部滿級','wingmax',0],['直接贏下這座島','advwin',0],['升 5 級','advlv',5],['冒險進度重置','advreset',0]]],
+ ['時間',[['快轉 1 小時','off',1],['快轉 8 小時','off',8],['委託換新的一天','dqnew',0],['委託全部完成','dqdone',0]]],
+ ['其他',[['成就全部達成','achall',0],['成就全部重置','achreset',0],['重看新手教學','tut',0],['備份目前存檔','bak',0],['還原備份','restore',0],['全新開始（清除存檔）','wipe',0]]]];
+const ADMT=[['god','無敵模式','挖礦和冒險不會受傷、鑽頭不會過熱'],['perf','疊疊樂永遠完美',''],['fps','顯示 FPS','']];
+function admUI(){const ok=isAdmin();$('admfab').hidden=!ok;if(!ok){$('admd').hidden=true;return}const el=$('admbox');if($('admd').hidden)return;
+  el.innerHTML='<p class="soft">按下去馬上生效，不會跳確認。重要進度先按「備份目前存檔」。</p>'
+   +'<div class="admg"><b>開關</b><div>'+ADMT.map(t=>'<button class="tg'+(ADMF[t[0]]?' on':'')+'" data-tg="'+t[0]+'" title="'+t[2]+'">'+(ADMF[t[0]]?'✓ ':'')+t[1]+'</button>').join('')+'</div></div>'
+   +'<div class="admg"><b>經濟速度（樹液、自動收益）</b><div>'+[1,10,100,1000].map(v=>'<button class="tg'+(ADMF.ts===v?' on':'')+'" data-ts="'+v+'">x'+v+'</button>').join('')+'</div></div>'
+   +'<div class="admg"><b>天色</b><div>'+[[-1,'跟著時間'],[12,'白天'],[18,'傍晚'],[22,'晚上']].map(v=>'<button class="tg'+(ADMF.hour===v[0]?' on':'')+'" data-hr="'+v[0]+'">'+v[1]+'</button>').join('')+'</div></div>'
+   +'<div class="admg"><b>直接設定數值</b><div class="admset">'+[['tree','大樹等級',S.tree.lv],['slv','疊疊樂等級',S.lv],['stars','星塵',S.stars],['gems','寶石',S.gems]].map(f=>'<label>'+f[1]+'<input type="number" min="0" data-set="'+f[0]+'" value="'+Math.floor(f[2])+'"></label>').join('')+'<button data-adm="setall" data-v="0">套用</button></div></div>'
+   +ADM.map(g=>'<div class="admg"><b>'+g[0]+'</b><div>'+g[1].map(b=>'<button data-adm="'+b[1]+'" data-v="'+b[2]+'">'+b[0]+'</button>').join('')+'</div></div>').join('')
    +'<div class="admg"><b>狀態</b><p class="soft" id="admst"></p></div>';admStat()}
-function admStat(){const e=$('admst');if(e)e.textContent='大樹 Lv '+S.tree.lv+'・疊疊樂 Lv '+S.lv+'・最高區域 '+S.maxSc+'・礦層 '+S.mine.maxL+'・冒險 '+((S.adv&&S.adv.cl)||0)+' 區・樹靈 '+Object.keys(S.sp.own).length+' 隻・繪圖 '+(GLON?'WebGL':'2D')}
-function admDo(k,v){v=+v;const allOre=()=>{for(const o of ORES)S.ore[o[0]]=(S.ore[o[0]]||0)+v};
+function admStat(){const e=$('admst');if(e)e.textContent='大樹 Lv '+S.tree.lv+'・疊疊樂 Lv '+S.lv+'・最高區域 '+S.maxSc+'・礦層 '+S.mine.maxL+'・冒險 '+((S.adv&&S.adv.cl)||0)+' 區・樹靈 '+Object.keys(S.sp.own).length+' 隻・繪圖 '+(GLON?'WebGL':'2D')+'・'+(cloudUser?cloudUser.email:'未登入')}
+function admDo(k,v){const allOre=n=>{for(const o of ORES)S.ore[o[0]]=(S.ore[o[0]]||0)+n};const nv=+v;
   switch(k){
-  case'res':S.sap+=v;S.sun+=v;S.water+=v;S.nutr=(S.nutr||0)+v;S.coins+=v;break;
-  case'gems':S.gems+=v;break;case'fossil':S.fossil+=v;break;case'aseed':S.aseed+=v;break;case'nutr':S.nutr=(S.nutr||0)+v;break;case'stars':S.stars+=v;break;case'coins':S.coins+=v;break;case'ore':allOre();break;
+  case'unlockall':S.tree.lv=Math.max(S.tree.lv,30);for(const n of TL)S.tl[n.id]=Math.max(tl(n.id),1);if(!S.sp.nest.length)S.sp.nest=[null];S.mine.maxL=ZONES.length-1;S.maxSc=SC.length-1;for(const sp of SPEC)if(!S.sp.own[sp.id])S.sp.own[sp.id]={lv:1,aw:0};S.adv=S.adv||{};S.adv.cl=AZ.length;break;
+  case'res':S.sap+=nv;S.sun+=nv;S.water+=nv;S.nutr=(S.nutr||0)+nv;S.coins+=nv;break;
+  case'gems':S.gems+=nv;break;case'fossil':S.fossil+=nv;break;case'aseed':S.aseed+=nv;break;case'nutr':S.nutr=(S.nutr||0)+nv;break;case'stars':S.stars+=nv;break;case'coins':S.coins+=nv;break;case'ore':allOre(nv);break;
   case'zero':S.sap=S.sun=S.water=S.nutr=S.coins=0;S.ore={};break;
-  case'tree':S.tree.lv=Math.max(0,Math.min(TMAX,S.tree.lv+v));S.tree.p=0;break;
+  case'tree':S.tree.lv=Math.max(0,Math.min(TMAX,S.tree.lv+nv));S.tree.p=0;break;
+  case'tgrow':growBy(10-S.tree.p);break;
   case'fruit':S.fruit=fruitCap();break;
   case'tlmax':for(const n of TL)S.tl[n.id]=n.m;if(!S.sp.nest.length)S.sp.nest=[null];break;
+  case'tlbranch':for(const n of TL)if(n.b===v)S.tl[n.id]=n.m;break;
   case'tlreset':S.tl={};break;
-  case'slv':S.lv+=v;break;case'skins':S.lv=Math.max(S.lv,skinLv(SK.length-1));break;case'zones':S.maxSc=SC.length-1;break;
-  case'upmax':for(const u of UP)S.u[u[0]]=u[5];break;
+  case'slv':S.lv+=nv;break;case'skins':S.lv=Math.max(S.lv,skinLv(SK.length-1));break;case'zones':S.maxSc=SC.length-1;break;
+  case'upmax':for(const u of UP)S.u[u[0]]=u[5];break;case'sreset':S.lv=0;S.coins=0;S.u=freshU();break;
   case'mupmax':for(const u of MUP)S.mine[u[0]]=u[3];break;case'mupzero':for(const u of MUP)S.mine[u[0]]=0;break;
   case'mlayers':S.mine.maxL=ZONES.length-1;break;
+  case'mtp':if(view==='mine'&&mw){mw.m=nv;mw.heat=0}else{hbanner('先進入挖礦再傳送');return}break;
+  case'mcool':if(mw)mw.heat=0;break;
   case'spall':for(const sp of SPEC)if(!S.sp.own[sp.id])S.sp.own[sp.id]={lv:1,aw:0};break;
-  case'splv':for(const id in S.sp.own)S.sp.own[id].lv=Math.min(SPMAX,S.sp.own[id].lv+v);break;
+  case'splv':for(const id in S.sp.own)S.sp.own[id].lv=Math.min(SPMAX,S.sp.own[id].lv+nv);break;
+  case'spaw':for(const id in S.sp.own)S.sp.own[id].aw=AWMAX;break;
   case'hatch':for(const n of S.sp.nest)if(n)n.t0=0;break;
   case'advall':S.adv=S.adv||{};S.adv.cl=AZ.length;break;
   case'wingmax':S.adv=S.adv||{};S.adv.wing={};for(const w of WING)S.adv.wing[w[0]]=w[5];break;
+  case'advwin':if(SV&&SV.mode==='fight'&&!SV.cleared){for(const e of SV.E)if(!e.dead)svHit(e,1e12,'木');SV.t=SV.dur;SV.won=true}else{hbanner('要在冒險的島上戰鬥時才能用');return}break;
+  case'advlv':if(SV&&!SV.over){SV.pend+=nv}else{hbanner('要在冒險中才能用');return}break;
   case'advreset':S.adv={team:(S.adv&&S.adv.team)||[]};break;
-  case'off':offline(v*3600);break;
+  case'off':offline(nv*3600);break;
   case'dqnew':S.dq=null;dqEnsure();break;case'dqdone':{const d=dqEnsure();for(const q of d.q)q.p=q.n}break;
-  case'achall':for(const a of ACH)S.done[a[0]]=1;break;
-  case'tut':S.tut2=0;S.tutH={};$('mnp').hidden=true;break;
+  case'achall':for(const a of ACH)S.done[a[0]]=1;break;case'achreset':S.done={};S.got={};break;
+  case'tut':S.tut2=0;S.tutH={};break;
+  case'setall':for(const inp of document.querySelectorAll('#admbox [data-set]')){const n=Math.max(0,Math.floor(+inp.value||0)),f=inp.dataset.set;if(f==='tree'){S.tree.lv=Math.min(TMAX,n);S.tree.p=0}else if(f==='slv')S.lv=n;else S[f]=n}break;
   case'bak':try{localStorage.setItem('stackcash_admbak',JSON.stringify(S));hbanner('已備份目前存檔')}catch(e){}save();return;
-  case'restore':try{const b=localStorage.getItem('stackcash_admbak');if(!b){hbanner('還沒有備份');return}localStorage.setItem('stackcash3',b);location.reload()}catch(e){}return}
-  SPD=true;save();ui();hubUI();if(typeof mui==='function'&&view==='mine')mui();admStat();hbanner('管理員：已執行');SFX.click()}
-$('admbox').addEventListener('click',e=>{const b=e.target.closest('button[data-adm]');if(!b||!isAdmin())return;admDo(b.dataset.adm,b.dataset.v)});
+  case'restore':try{const b=localStorage.getItem('stackcash_admbak');if(!b){hbanner('還沒有備份');return}localStorage.setItem('stackcash3',b);location.reload()}catch(e){}return;
+  case'wipe':if(!admDo.armW){admDo.armW=1;hbanner('真的要清除存檔？再按一次');setTimeout(()=>admDo.armW=0,2500);return}try{localStorage.removeItem('stackcash3');location.reload()}catch(e){}return}
+  SPD=true;save();ui();hubUI();if(view==='mine'&&typeof mui==='function')mui();admUI();hbanner('管理員：已執行');SFX.click()}
+$('admbox').addEventListener('click',e=>{const b=e.target.closest('button');if(!b||!isAdmin())return;const d=b.dataset;
+  if(d.tg){ADMF[d.tg]=ADMF[d.tg]?0:1;admSave();admUI();SFX.click();return}
+  if(d.ts){ADMF.ts=+d.ts;admSave();admUI();SFX.click();return}
+  if(d.hr!=null){ADMF.hour=+d.hr;admSave();admUI();SFX.click();return}
+  if(d.adm)admDo(d.adm,d.v)});
+$('admfab').addEventListener('click',()=>{$('admd').hidden=!$('admd').hidden;admUI();SFX.click()});
+$('admx').addEventListener('click',()=>{$('admd').hidden=true;SFX.click()});
+// FPS 顯示
+(function(){let n=0,t0=performance.now(),el=null;function tick(t){n++;if(t-t0>=500){const f=Math.round(n*1000/(t-t0));n=0;t0=t;if(ADMF.fps&&isAdmin()){if(!el){el=document.createElement('div');el.id='admfps';document.body.appendChild(el)}el.textContent=f+' FPS';el.hidden=false}else if(el)el.hidden=true}requestAnimationFrame(tick)}requestAnimationFrame(tick)})();
 
 /* ================= 第四階段（試玩）：樹靈冒險 =================
    島到島的遠征：從大樹出發，在雲海地圖上選路線，乘翼種滑翔到下一座浮島，
@@ -3256,7 +3299,7 @@ function svGlideStep(dt){const g=SV.gl,H=SV.H2;g.t+=dt;
     if(o.k==='dew'&&Math.abs(dx)<22&&Math.abs(dy)<26){o.got=1;svXP(1);SFX.coin()}
     if(o.k==='storm'&&Math.hypot(dx,dy)<o.r+12&&g.hit<=0){g.hit=1;svGlHurt(.12,'被雷雲打到了！')}}
   if(g.x>=g.D)g.land=.0001}
-function svGlHurt(k,why){k*=TM('glide');SV.hp=Math.max(1,SV.hp-SV.mhp*k);SV.msg=why;SV.msgT=1.4;buzz(40);SFX.fail()}
+function svGlHurt(k,why){if(GOD())return;k*=TM('glide');SV.hp=Math.max(1,SV.hp-SV.mhp*k);SV.msg=why;SV.msgT=1.4;buzz(40);SFX.fail()}
 function svXP(v){SV.xp+=v;while(SV.xp>=SV.need){SV.xp-=SV.need;SV.lv++;SV.need=Math.round(5+SV.lv*2.6+SV.lv**1.4);SV.pend++}}
 function svGlideDraw(){const c=svx(),W2=SV.W2,H2=SV.H2,g=SV.gl,z=SV.z,cam=g.x-W2*.3;
   const sk=c.createLinearGradient(0,0,0,H2);sk.addColorStop(0,z.sky[0]);sk.addColorStop(1,z.sky[1]);c.fillStyle=sk;c.fillRect(0,0,W2,H2);
@@ -3338,10 +3381,10 @@ function svFightStep(dt){const S2=SV;S2.t+=dt;
     e.x+=e.kx*dt;e.y+=e.ky*dt;e.kx*=.86;e.ky*=.86;
     {const a=Math.atan2(e.y,e.x),d=Math.hypot(e.x,e.y),R=S2.I.rad(a)-4;if(d>R){e.x*=R/d;e.y*=R/d}}
     if(e.shoot){e.sh-=dt;if(e.sh<=0){e.sh=e.boss?2.4:e.elite?2.8:4.8;const a=Math.atan2(S2.y-e.y,S2.x-e.x),n=e.boss||e.elite?5:1;for(let k=0;k<n;k++){const b=a+(k-(n-1)/2)*.3;S2.EB.push({x:e.x,y:e.y,vx:Math.cos(b)*125,vy:Math.sin(b)*125,life:4.5,d:e.dmg*.4})}}}
-    const dd=(e.x-S2.x)**2+(e.y-S2.y)**2;if(dd<(e.r+18)**2&&S2.inv<=0){S2.hp-=Math.max(1,e.dmg-S2.P.arm);S2.inv=.5;buzz(20)}}
+    const dd=(e.x-S2.x)**2+(e.y-S2.y)**2;if(dd<(e.r+18)**2&&S2.inv<=0&&!GOD()){S2.hp-=Math.max(1,e.dmg-S2.P.arm);S2.inv=.5;buzz(20)}}
   for(let k=0;k<S2.E.length;k+=2){const a=S2.E[k],b=S2.E[(k+7)%S2.E.length];if(a===b)continue;const dx=a.x-b.x,dy=a.y-b.y,d=Math.hypot(dx,dy)||1,m=a.r+b.r;if(d<m){const p=(m-d)/2/d;a.x+=dx*p;a.y+=dy*p;b.x-=dx*p;b.y-=dy*p}}
   S2.E=S2.E.filter(e=>!e.dead);
-  for(const b of S2.EB){b.x+=b.vx*dt;b.y+=b.vy*dt;b.life-=dt;if((b.x-S2.x)**2+(b.y-S2.y)**2<15*15&&S2.inv<=0){S2.hp-=Math.max(1,b.d-S2.P.arm);S2.inv=.5;b.life=0}}S2.EB=S2.EB.filter(b=>b.life>0);
+  for(const b of S2.EB){b.x+=b.vx*dt;b.y+=b.vy*dt;b.life-=dt;if((b.x-S2.x)**2+(b.y-S2.y)**2<15*15&&S2.inv<=0&&!GOD()){S2.hp-=Math.max(1,b.d-S2.P.arm);S2.inv=.5;b.life=0}}S2.EB=S2.EB.filter(b=>b.life>0);
   S2.inv=Math.max(0,S2.inv-dt);
   const MR=95*(1+.35*S2.P.mag);for(const g of S2.G){const dx=S2.x-g.x,dy=S2.y-g.y,d=Math.hypot(dx,dy)||1;if(d<MR||g.pull){g.pull=1;g.x+=dx/d*(S2.cleared?700:420)*dt;g.y+=dy/d*(S2.cleared?700:420)*dt}if(d<16){g.got=1;svXP(g.v)}}
   S2.G=S2.G.filter(g=>!g.got);if(S2.G.length>400)S2.G.splice(0,S2.G.length-400);
@@ -3601,7 +3644,7 @@ for(const b of document.querySelectorAll('.bnt')){b.textContent=bnTxt();b.addEve
 
 const ro=new ResizeObserver(()=>{size();fitAll();if(state!=='play')resetTower()});
 size();resetTower();ro.observe(stage);
-setInterval(()=>{gainSap(sapRate());if(view==='hub')hubUI()},1000);
+setInterval(()=>{gainSap(sapRate()*TS());if(view==='hub')hubUI()},1000);
 if(!S.sapInit){S.sapInit=1;const g=Math.ceil(sapRate()*900);gainSap(g);setTimeout(()=>hbanner('大樹有了自己的貨幣「樹液」！送你 '+fmt(g)+' 樹液，升級樹改用它來買'),1200)}
 spInit();btInit();dqInit();mnInit();tutInit();cloudInit();admUI();fruitTick();hsize();offline((Date.now()-S.last)/1000);daily();show('hub');requestAnimationFrame(frame);requestAnimationFrame(hframe);requestAnimationFrame(mframe);
 }
