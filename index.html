@@ -279,6 +279,12 @@ h1{font:900 clamp(26px,4vw,36px)/1.05 "Noto Sans TC",sans-serif;margin:0 0 4px;t
 .bnt{min-height:32px!important;min-width:58px;padding:0 12px;border-radius:99px!important;background:#2a2a2a;color:#ffd23f;font:900 13px "Baloo 2","Noto Sans TC",sans-serif;box-shadow:0 2px 0 rgba(0,0,0,.35)}
 .qbn{flex:none;min-width:48px;padding:0 8px;align-self:center}
 .tkzoom .tbn{min-height:40px!important;background:#2a2a2a!important;color:#ffd23f!important}
+.cloud{display:flex;flex-direction:column;gap:6px}.cloud h3{margin:0}
+#cloudbox{display:flex;flex-direction:column;gap:8px}#cloudbox p{margin:0}
+.gbtn{display:flex;align-items:center;justify-content:center;gap:10px;background:#fff;color:#1f1f1f;border:1px solid #dadce0!important;font-weight:700;min-height:44px}
+.guser{display:flex;align-items:center;gap:10px}.guser img{width:36px;height:36px;border-radius:50%}.guser span{flex:1;display:flex;flex-direction:column;min-width:0}.guser small{color:var(--soft);font-size:12px;overflow:hidden;text-overflow:ellipsis}
+.guser button{min-height:34px;padding:0 12px;background:var(--bg);color:var(--ink)}
+.gconf{background:#fff4e0;border:2px solid #ffb36b;border-radius:12px;padding:10px;display:flex;flex-direction:column;gap:6px}.gconf p{font-size:13px;line-height:1.5}
 .dqb{background:#e0761a;box-shadow:0 4px 0 #a5520c,0 6px 14px rgba(0,0,0,.2)}
 .dqbox{width:min(440px,100%)}
 #dqlist{display:flex;flex-direction:column;gap:8px}
@@ -630,6 +636,7 @@ textarea{width:100%;font:13px/1.4 ui-monospace,monospace;border-radius:12px;bord
         <div class="row"><span>音效</span><button id="snd">開</button></div>
         <div class="row"><span>背景音樂</span><button id="mus">開</button></div>
         <div class="row"><label for="vol">音量</label><input id="vol" type="range" min="0" max="1" step="0.05" value="0.6"></div>
+        <div class="cloud" id="cloud"><h3>Google 帳號・雲端存檔</h3><div id="cloudbox"><p class="soft">載入中…</p></div></div>
         <div><h3>存檔碼</h3><p class="soft">換裝置或清除瀏覽器資料前先複製起來，之後貼回來就能接著玩。</p></div>
         <textarea id="code" rows="3" aria-label="存檔碼"></textarea>
         <div class="row2"><button id="exp">產生並複製</button><button id="imp">讀取存檔碼</button></div>
@@ -2973,6 +2980,53 @@ function tutInit(){$('tut').addEventListener('click',e=>{const b=e.target.closes
   setInterval(()=>{try{tutTick()}catch(e){}},150)}
 function tutRestart(){S.tut2=0;$('mnp').hidden=true;save();SFX.click()}
 
+/* ================= Google 登入・雲端存檔（Firebase） =================
+   登入後，進度自動存到雲端（每 3 分鐘、切到背景時各存一次），換手機或電腦登入同一個帳號就能接著玩。
+   兩邊進度不一樣時，讓玩家自己選要留哪一份。沒有設定 FB_CONF 時這整塊不會啟動。 */
+const FB_CONF={apiKey:'AIzaSyCXqfi3pZqpriMEZ7STG0cAvjbog0-_hGs',authDomain:'games-of-the-tree.firebaseapp.com',projectId:'games-of-the-tree',storageBucket:'games-of-the-tree.firebasestorage.app',messagingSenderId:'392103869035',appId:'1:392103869035:web:60e4a632dd6035d2eb4f2e'};
+// Google 登入只在 GitHub Pages 版開放（其他地方的網址沒有加進 Firebase 授權網域，登入會被擋）
+const CLOUD_OK=/(^|\.)chouhug\.github\.io$/.test(location.hostname)||location.hostname==='localhost';
+const FBV='10.12.2';
+let FB=null,cloudUser=null,cloudState='',cloudRemote=null,cloudT=0;
+function cloudUI(){const el=$('cloudbox');if(!el)return;
+  if(!FB_CONF||!CLOUD_OK){el.innerHTML='<p class="soft">Google 登入只能在 <a href="https://chouhug.github.io/The-Games-of-the-Tree/" target="_blank" rel="noopener">GitHub 版</a> 使用。這裡可以用下面的存檔碼搬移進度。</p>';return}
+  if(!FB){el.innerHTML='<p class="soft">'+(cloudState==='err'?'連不上 Google 登入服務，請確認網路後重新整理。':'載入中…')+'</p>';return}
+  if(!cloudUser){el.innerHTML='<p class="soft">登入後進度會存在雲端，換裝置登入同一個帳號就能接著玩。</p><button id="glogin" class="gbtn"><svg viewBox="0 0 24 24" width="18" height="18"><path fill="#4285F4" d="M23.5 12.3c0-.8-.1-1.6-.2-2.3H12v4.5h6.5a5.6 5.6 0 0 1-2.4 3.6v3h3.9c2.3-2.1 3.5-5.2 3.5-8.8z"/><path fill="#34A853" d="M12 24c3.2 0 6-1.1 7.9-2.9l-3.9-3c-1.1.7-2.4 1.1-4 1.1-3.1 0-5.7-2.1-6.6-4.9h-4v3.1A12 12 0 0 0 12 24z"/><path fill="#FBBC05" d="M5.4 14.3a7.2 7.2 0 0 1 0-4.6V6.6h-4a12 12 0 0 0 0 10.8l4-3.1z"/><path fill="#EA4335" d="M12 4.8c1.8 0 3.3.6 4.6 1.8l3.4-3.4A12 12 0 0 0 1.4 6.6l4 3.1C6.3 6.9 8.9 4.8 12 4.8z"/></svg>用 Google 登入</button>'+(cloudState==='popup'?'<p class="soft">登入視窗被擋住了，請允許彈出視窗後再試一次。</p>':'');return}
+  const u=cloudUser,ago=cloudT?Math.max(0,Math.round((Date.now()-cloudT)/1000)):null;
+  let h='<div class="guser">'+(u.photoURL?'<img src="'+u.photoURL+'" alt="" referrerpolicy="no-referrer">':'')+'<span><b>'+(u.displayName||'玩家')+'</b><small>'+(u.email||'')+'</small></span><button id="glogout">登出</button></div>';
+  if(cloudState==='conflict'&&cloudRemote){const r=cloudRemote;
+    h+='<div class="gconf"><b>雲端和這台裝置的進度不一樣</b><p>雲端：大樹 Lv '+((r.tree&&r.tree.lv)||0)+'・'+new Date(r.last||0).toLocaleString('zh-TW')+'<br>這台：大樹 Lv '+S.tree.lv+'・'+new Date(S.last||0).toLocaleString('zh-TW')+'</p><div class="row2"><button id="guse">用雲端的進度</button><button id="gkeep">保留這台的（蓋掉雲端）</button></div></div>'}
+  else h+='<p class="soft">'+(cloudState==='saving'?'正在存到雲端…':cloudState==='fail'?'上次存到雲端失敗，稍後會自動重試。':ago!==null?'已存到雲端（'+(ago<60?ago+' 秒前':Math.round(ago/60)+' 分鐘前')+'）':'已登入')+'</p><button id="gsave">現在存到雲端</button>';
+  el.innerHTML=h}
+async function cloudInit(){cloudUI();if(!FB_CONF||!CLOUD_OK)return;
+  try{const base='https://www.gstatic.com/firebasejs/'+FBV+'/';
+    const[app,auth,fs]=await Promise.all([import(base+'firebase-app.js'),import(base+'firebase-auth.js'),import(base+'firebase-firestore.js')]);
+    const a=app.initializeApp(FB_CONF);FB={auth:auth.getAuth(a),db:fs.getFirestore(a),A:auth,F:fs};
+    FB.auth.languageCode='zh-TW';
+    auth.getRedirectResult(FB.auth).catch(()=>{});
+    auth.onAuthStateChanged(FB.auth,u=>{cloudUser=u;cloudState='';cloudUI();if(u)cloudPull()});
+  }catch(e){cloudState='err';cloudUI()}}
+async function cloudLogin(){if(!FB)return;const p=new FB.A.GoogleAuthProvider();
+  try{await FB.A.signInWithPopup(FB.auth,p)}catch(e){if(e&&(e.code==='auth/popup-blocked'||e.code==='auth/operation-not-supported-in-this-environment')){try{await FB.A.signInWithRedirect(FB.auth,p)}catch(_){cloudState='popup';cloudUI()}}else if(!(e&&e.code==='auth/popup-closed-by-user')){cloudState='popup';cloudUI()}}}
+const cloudDoc=()=>FB.F.doc(FB.db,'saves',cloudUser.uid);
+async function cloudPull(){try{const d=await FB.F.getDoc(cloudDoc());if(!d.exists()){await cloudPush();return}
+    const r=JSON.parse(d.data().data);cloudRemote=r;
+    const same=Math.abs((r.last||0)-(S.last||0))<3000&&(r.tree&&r.tree.lv)===S.tree.lv;
+    if(same){cloudT=d.data().t||Date.now();cloudState='';cloudUI();return}
+    // 新存檔（剛開始玩）直接用雲端的，不用問
+    if(S.tree.lv===0&&!S.best){cloudApply();return}
+    cloudState='conflict';cloudUI();$('mnp').hidden=false;document.querySelector('.mtabs button[data-m=set]').click();hbanner('雲端有另一份進度，請選要用哪一份')}
+  catch(e){cloudState='fail';cloudUI()}}
+async function cloudPush(){if(!FB||!cloudUser||cloudState==='conflict')return;cloudState='saving';cloudUI();
+  try{save();await FB.F.setDoc(cloudDoc(),{data:JSON.stringify(S),t:Date.now(),lv:S.tree.lv,name:cloudUser.displayName||''});cloudT=Date.now();cloudState=''}catch(e){cloudState='fail'}cloudUI()}
+function cloudApply(){try{localStorage.setItem('stackcash3',JSON.stringify(cloudRemote));location.reload()}catch(e){}}
+$('cloudbox')&&$('cloudbox').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;SFX.click();
+  if(b.id==='glogin')cloudLogin();else if(b.id==='glogout'){FB.A.signOut(FB.auth)}else if(b.id==='gsave')cloudPush();
+  else if(b.id==='guse')cloudApply();else if(b.id==='gkeep'){cloudState='';cloudPush()}});
+setInterval(()=>{if(cloudUser&&cloudState!=='conflict')cloudPush()},180000);   // 每 3 分鐘自動存一次（Firebase 免費額度每天 2 萬次寫入，存太頻繁很快會用完）
+document.addEventListener('visibilitychange',()=>{if(document.hidden&&cloudUser&&cloudState!=='conflict')cloudPush()});
+setInterval(()=>{if(cloudUser&&!$('mnp').hidden)cloudUI()},10000);
+
 /* ================= 第四階段（試玩）：樹靈冒險 =================
    島到島的遠征：從大樹出發，在雲海地圖上選路線，乘翼種滑翔到下一座浮島，
    降落後在有邊界的島上撐過枯萎的圍攻。等級和武器一路累積，打倒區域首領就淨化整區。 */
@@ -3470,7 +3524,7 @@ const ro=new ResizeObserver(()=>{size();fitAll();if(state!=='play')resetTower()}
 size();resetTower();ro.observe(stage);
 setInterval(()=>{gainSap(sapRate());if(view==='hub')hubUI()},1000);
 if(!S.sapInit){S.sapInit=1;const g=Math.ceil(sapRate()*900);gainSap(g);setTimeout(()=>hbanner('大樹有了自己的貨幣「樹液」！送你 '+fmt(g)+' 樹液，升級樹改用它來買'),1200)}
-spInit();btInit();dqInit();mnInit();tutInit();fruitTick();hsize();offline((Date.now()-S.last)/1000);daily();show('hub');requestAnimationFrame(frame);requestAnimationFrame(hframe);requestAnimationFrame(mframe);
+spInit();btInit();dqInit();mnInit();tutInit();cloudInit();fruitTick();hsize();offline((Date.now()-S.last)/1000);daily();show('hub');requestAnimationFrame(frame);requestAnimationFrame(hframe);requestAnimationFrame(mframe);
 }
 </script>
 </body>
