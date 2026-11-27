@@ -2023,8 +2023,8 @@ function hframe(ts){
   if(cam3.auto)cam3.yaw+=dt*.12;else if((cam3.idle+=dt)>4)cam3.auto=true;
   LOOKY+=(Math.min(7,TREE.top*.42)-LOOKY)*Math.min(1,dt*2);
   cam3.dist+=(Math.max(20,13+TREE.top*1.45)*cam3.zm*cam3.fit-cam3.dist)*Math.min(1,dt*2);}   // 樹越大鏡頭拉越遠
-  hx=HBX;const night=sky();lightSetup();eyeSetup();const items=[];if(GLON){glBegin();const bg=[];bgWorld(bg);for(const it of bg.sort((a,b)=>b.z-a.z))it.f?it.f():0;hx=HOX;HOX.clearRect(0,0,HW,HH)}else bgWorld(items);ground();pond();
-  const lv=S.tree.lv,wd=Math.sin(hT*1.3)*.04;hits=[];birds(items);
+  hx=HBX;const night=sky();lightSetup();eyeSetup();const items=[];if(GLON){glBegin();const bg=[];bgWorld(bg);birds(bg);for(const it of bg.sort((a,b)=>b.z-a.z))it.f?it.f():0;hx=HOX;HOX.clearRect(0,0,HW,HH)}else bgWorld(items);ground();pond();
+  const lv=S.tree.lv,wd=Math.sin(hT*1.3)*.04;hits=[];if(!GLON)birds(items);
   for(const s of TREE.segs){const sw=(s.d/6)*wd*s.a[1];
     if(s.m){if(GLON){glMesh(s.m,sw,0,0);continue}const cm=C((s.a[0]+s.b[0])/2+sw,(s.a[1]+s.b[1])/2,(s.a[2]+s.b[2])/2);if(cm[2]<NEAR||s.r*FOC/cm[2]>2.6){emitMesh(items,s.m,sw,0,0);continue}}
     let ca=C(s.a[0]+sw,s.a[1],s.a[2]),cb=C(s.b[0]+sw*1.3,s.b[1],s.b[2]);if(ca[2]<NEAR||cb[2]<NEAR)continue;const a=PJ(ca),b=PJ(cb);
@@ -2096,7 +2096,7 @@ function pond(){const cx=-6.6,cz=6.2;const ring=(rx,rz)=>Array.from({length:28},
   polyW(ring(2.3,1.7),lit('#7fb36a'));polyW(ring(2,1.45),lit('#4ba3d9'));polyW(ring(1.6,1.1),lit('#79c6f0'));polyW([[cx-.9,.004,cz-.3],[cx+.2,.004,cz-.75],[cx+.45,.004,cz-.6],[cx-.6,.004,cz-.15]],'rgba(255,255,255,'+(NIGHT?.12:.3)+')');
   for(let k=0;k<2;k++){const r=((hT*.4+k*.5)%1),q=ring(.3+r*1.2,.2+r*.8).map(w=>P(...w));if(q.some(p=>p[2]<NEAR))continue;hx.strokeStyle='rgba(255,255,255,'+(.6*(1-r))+')';hx.lineWidth=1.5;hx.beginPath();q.forEach((p,i)=>i?hx.lineTo(p[0],p[1]):hx.moveTo(p[0],p[1]));hx.closePath();hx.stroke()}
   const lx=cx+.6,lz=cz-.3,disc=(x,z,r,y)=>Array.from({length:12},(_,i)=>{const t=i/12*Math.PI*2+(i===0?.3:0);return[x+Math.cos(t)*r,y,z+Math.sin(t)*r]});polyW(disc(lx,lz,.3,.015),lit('#3f9a4a'));polyW(disc(lx+.06,lz-.05,.07,.03),'#ff9ec7')}
-// 天上飛過的鳥
+// 天上飛過的鳥（GL 模式畫在背景層，不然線條會蓋在浮島和主島上看起來像裂痕）
 function birds(items){for(let k=0;k<5;k++){const a=hT*.06+k*.3,r=34+k*1.8,x=Math.cos(a)*r,z=Math.sin(a)*r,y=19+Math.sin(hT*.5+k)*1.5+k%2;
   const sd=[Math.cos(a),0,Math.sin(a)],fa=Math.sin(hT*6+k*2)*.6,W=.6,L=[x+sd[0]*W*Math.cos(fa),y+Math.sin(fa)*W,z+sd[2]*W*Math.cos(fa)],Rr=[x-sd[0]*W*Math.cos(fa),y+Math.sin(fa)*W,z-sd[2]*W*Math.cos(fa)];
   const p=P(x,y,z),pl=P(...L),pr=P(...Rr);if(p[2]<NEAR||pl[2]<NEAR||pr[2]<NEAR)continue;
@@ -2177,7 +2177,10 @@ const GBC=['#ff6b3d','#ffd23f','#4dabf7','#06d6a0','#9b7bff','#ff8fb1'];
 function gateGround(){const[x,z]=GMIN,cr=Math.cos(GMR),sr=Math.sin(GMR);
   const el=(a,b,y)=>Array.from({length:22},(_,i)=>{const t=i/22*Math.PI*2,u=Math.cos(t)*a,w=Math.sin(t)*b;return[x+u*cr-w*sr,y,z+u*sr+w*cr]});
   polyW(el(1.25,1,.005),'#9c7650');polyW(el(.78,.56,.01),'#3a2617');polyW(el(.6,.42,.012),'#120a05');
-  if(tl('d3')){const ox=-sr,oz=cr;hx.strokeStyle='#6d6d75';for(const o of[-.22,.22]){const a=P(x+o*cr+ox*.5,.02,z+o*sr+oz*.5),b=P(x+o*cr+ox*2.2,.02,z+o*sr+oz*2.2);if(a[2]<NEAR||b[2]<NEAR)continue;hx.lineWidth=Math.max(1,.05*a[3]);hx.beginPath();hx.moveTo(a[0],a[1]);hx.lineTo(b[0],b[1]);hx.stroke()}}}
+  // 鐵軌：枕木和兩條軌道都是貼地的面（跟地面一起做深度測試），不再用最上層的線條畫，才不會穿過樹和招牌
+  if(tl('d3')){const at=(u,w,y)=>[x+u*cr-w*sr,y,z+u*sr+w*cr],q=(u0,u1,w0,w1,y,c)=>polyW([at(u0,w0,y),at(u1,w0,y),at(u1,w1,y),at(u0,w1,y)],c);
+    for(let w=.6;w<2.2;w+=.32)q(-.36,.36,w,w+.12,.014,'#6b4a2c');
+    for(const o of[-.22,.22])q(o-.03,o+.03,.5,2.2,.02,'#7c7c86')}}
 // 樹靈冒險的入口：石頭平台上插著一面旗，三根石柱圍著一圈發光的出發點
 function advGate(items){const[x,z]=GADV,on=advOn();
   emitMesh(items,prismMesh([x,0,z],[x,.22,z],1.05,1,9,()=>['#a59a8a',1]));emitMesh(items,prismMesh([x,.22,z],[x,.26,z],.8,.8,9,()=>[on?'#6fe0c0':'#8a8478',1.1]));
@@ -2187,7 +2190,7 @@ function advGate(items){const[x,z]=GADV,on=advOn();
   if(on){const q=P(x,.6,z);if(q[2]>NEAR)items.push({z:q[2]-.3,f(){const r=q[3]*(.9+.1*Math.sin(hT*3)),g=hx.createRadialGradient(q[0],q[1],0,q[0],q[1],r);g.addColorStop(0,'rgba(120,255,220,.35)');g.addColorStop(1,'rgba(120,255,220,0)');hx.fillStyle=g;hx.fillRect(q[0]-r,q[1]-r,r*2,r*2)}})}}
 // 淨化過的區域：打完首領，那座島會飄到主島旁邊停下來，變成之後蓋東西用的空地
 const ISLOT=[80,128,205,258,318].map(d=>d*Math.PI/180),IR0=3;
-function islePos(i){const a=ISLOT[i%ISLOT.length],R=13+IR0+.9+(i>=ISLOT.length?6:0);return[Math.cos(a)*R,-.35,Math.sin(a)*R]}
+function islePos(i){const a=ISLOT[i%ISLOT.length],R=13+IR0+1.3+(i>=ISLOT.length?6:0);return[Math.cos(a)*R,-.35,Math.sin(a)*R]}
 const ISLEM={};
 function isleMesh(i){if(ISLEM[i])return ISLEM[i];const z=AZ[i],r=IR0,N=18,rs=[[r,0],[r*1.03,-.22],[r*.93,-.75],[r*.74,-1.5],[r*.46,-2.5],[r*.18,-3.3]],v=[];
   rs.forEach(([R,y],j)=>{for(let q=0;q<N;q++){const t=q/N*Math.PI*2,k=j<2?1:1+(hr(i*300+j*40+q)-.5)*.22;v.push([Math.cos(t)*R*k,y+(j>1?(hr(i*90+j*20+q)-.5)*.25:0),Math.sin(t)*R*k])}});v.push([0,-3.9,0]);
