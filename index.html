@@ -479,6 +479,7 @@ h1{font:900 clamp(26px,4vw,36px)/1.05 "Noto Sans TC",sans-serif;margin:0 0 4px;t
 .mfu{margin-top:4px;display:flex;align-items:center;gap:4px;font-size:11px;font-weight:800;padding:4px 6px;border-radius:9px;background:#3a3a3a;color:#fff;white-space:nowrap;touch-action:none}
 .mfu .gm{width:9px!important;height:9px!important;margin:0!important}
 .mfu:disabled{opacity:.35}
+.mfu.dec{background:#5a4a3a;margin-top:3px}
 .mi2.z .mfu{display:none}.mi2.lk .gm{background:var(--line)!important;box-shadow:none}
 .mups2{display:flex;flex-direction:column;gap:8px}
 .mu{display:grid;grid-template-columns:40px minmax(0,1fr) auto;gap:4px 10px;align-items:center;background:var(--bg);border-radius:16px;padding:10px}
@@ -695,7 +696,7 @@ textarea{width:100%;font:13px/1.4 ui-monospace,monospace;border-radius:12px;bord
       <section class="tab" id="t-zone" hidden><p class="soft">第一次疊到這些區域，就會永久解鎖一項加成，大部分是給其他遊戲的。轉生也不會不見。</p><div id="zlist2"></div></section>
       <section class="tab" id="t-reb" hidden>
         <div class="starbox"><b id="stars">0</b><span>星塵</span></div>
-        <p>永久加成 <strong id="starm">x1.0</strong>。星塵越多加成越高，但越後面每顆加得越少（1 顆 x3、25 顆 x11、100 顆 x21、1 萬顆 x201）。</p>
+        <p>永久加成 <strong id="starm">x1.0</strong>。星塵越多加成越高，但越後面每顆加得越少（1 顆 x2、25 顆 x6、100 顆 x11、1 萬顆 x101）。</p>
         <p class="soft">轉生會清空金錢、收益等級、其他升級和外觀，換成星塵；最高紀錄、成就和星塵會保留。本輪累積滿 $10M 才能轉生，賺越多換越多。</p>
         <p>本輪累積 <strong id="earned">$0</strong></p>
         <button id="rebBtn" class="big">轉生</button>
@@ -744,7 +745,7 @@ textarea{width:100%;font:13px/1.4 ui-monospace,monospace;border-radius:12px;bord
         <div><small>最深</small><strong id="mbest">—</strong></div>
       </div>
       <div><h3>鑽頭機升級</h3><p class="soft mnote">只用礦石升級。礦不夠時，可以在下面的倉庫用熔爐把低級礦熔上來</p><div class="mups2" id="mups"></div></div>
-      <div><h3>礦石倉庫 <small style="font-weight:600;opacity:.65;font-size:12px">熔爐：4 個熔成 1 個上一級，按住連續熔</small></h3><div class="minv" id="minv"></div></div>
+      <div><h3>礦石倉庫 <small style="font-weight:600;opacity:.65;font-size:12px">熔爐：4 個熔成 1 個上一級・分解：1 個拆成 2 個下一級・按住連續</small></h3><div class="minv" id="minv"></div></div>
       <div><h3>鑽頭外觀</h3><div class="dskins" id="dskins"></div></div>
       <div><h3>地圖</h3><div class="map" id="mlayers"></div></div>
       <p class="soft">水和化石、古代種子會送回大樹，給澆水和樹靈使用。<span hidden id="mqcoins"></span></p>
@@ -765,10 +766,23 @@ const SK=[
  {n:'冰晶',c:['#8fdcff','#6cc4f0','#b4ebff'],p:'ice',sw:'linear-gradient(135deg,#b4ebff,#6cc4f0)'},
  {n:'熔岩',c:['#3a1e1a','#2e1714'],p:'lava',sw:'linear-gradient(120deg,#2e1714 40%,#ff7a1a 45% 50%,#2e1714 55%)'},
  {n:'霓虹',c:['#ff3df2','#27f3ff','#a6ff2e'],p:'neon',sw:'#151530;box-shadow:inset 0 0 0 3px #27f3ff,0 0 8px #27f3ff'},
- {n:'黃金',c:['#ffd23f','#f5b800','#ffe27a'],p:'gold',sw:'linear-gradient(135deg,#fff1a8,#f5b800 60%,#c98d00)'},
+ {n:'黃金',c:['#f5b800'],p:'gold',sw:'linear-gradient(135deg,#fff1a8,#f5b800 60%,#c98d00)'},
  {n:'鑽石',c:['#c9f4ff','#e6fbff','#b0ecfa'],p:'diamond',sw:'conic-gradient(from 45deg,#e6fbff,#9fe4f7,#ffffff,#b0ecfa,#e6fbff)'},
  {n:'彩虹',c:['#fff'],p:'rainbow',sw:'linear-gradient(90deg,#ff4d4d,#ffb84d,#fff04d,#4dff88,#4db8ff,#a64dff)'},
- {n:'宇宙',c:['#6c5cff','#ff4fd8','#28e0c8'],p:'galaxy',sw:'linear-gradient(135deg,#ff4fd8,#6c5cff 55%,#28e0c8)'}
+ {n:'宇宙',c:['#1a1446'],p:'galaxy',sw:'radial-gradient(circle at 30% 40%,#ff4fd8aa,transparent 45%),radial-gradient(circle at 70% 60%,#28e0c8aa,transparent 45%),#1a1446'},
+ // Lv 60 以後每 10 級解鎖一個
+ {n:'青瓷',c:['#a9d6c2','#9ccbb6','#b6dfcc'],p:'celadon',sw:'linear-gradient(135deg,#c4e6d6,#94c4ae)'},
+ {n:'竹林',c:['#7fbf4d','#6aad3c','#8fcc5a'],p:'bamboo',sw:'linear-gradient(90deg,#7fbf4d 40%,#4f8a2c 40% 46%,#7fbf4d 46%)'},
+ {n:'大理石',c:['#f2efe9','#ebe6de'],p:'marble',sw:'linear-gradient(120deg,#f2efe9 45%,#b9b3a8 47%,#f2efe9 50%)'},
+ {n:'瑪瑙',c:['#c0603a','#d98a5a','#a84a2c'],p:'agate',sw:'repeating-linear-gradient(170deg,#c0603a 0 5px,#e7b08a 5px 7px,#a84a2c 7px 12px)'},
+ {n:'珊瑚',c:['#ff7f7f','#ff9e8a','#ff6f91'],p:'coral',sw:'radial-gradient(circle at 30% 50%,#ffd0c0 0 3px,transparent 4px),radial-gradient(circle at 70% 40%,#ffd0c0 0 3px,transparent 4px),#ff7f7f'},
+ {n:'極光',c:['#0f2a3a'],p:'aurora',sw:'linear-gradient(160deg,#0f2a3a 30%,#3fffb0 50%,#b26bff 70%,#0f2a3a)'},
+ {n:'琥珀',c:['#f0a030','#e8902a'],p:'amber',sw:'radial-gradient(circle at 35% 35%,#ffe1a0,#e8902a 60%,#b8641a)'},
+ {n:'黑曜石',c:['#16131c','#1c1724'],p:'obsidian',sw:'linear-gradient(135deg,#16131c 40%,#6a4b9a 50%,#16131c 60%)'},
+ {n:'翡翠',c:['#2e9d6a','#278a5c','#36ad76'],p:'jade',sw:'radial-gradient(circle at 40% 40%,#a8f0c8,#2e9d6a 55%,#1d6b47)'},
+ {n:'電路',c:['#0d2b24'],p:'circuit',sw:'linear-gradient(90deg,#0d2b24 30%,#3dff9e 30% 34%,#0d2b24 34%)'},
+ {n:'櫻花',c:['#ffd3e0','#ffc4d6'],p:'sakura',sw:'radial-gradient(circle at 50% 50%,#fff 0 3px,#ff8fb1 4px 6px,transparent 7px),#ffd3e0'},
+ {n:'世界樹',c:['#6b4a2e','#5e4027'],p:'worldtree',sw:'linear-gradient(90deg,#5e4027 20%,#7a5636 20% 30%,#5e4027 30%),radial-gradient(circle,#7dffb0,transparent 60%)'}
 ];
 // 場景：名稱、起始高度(公尺)、收益加成
 // 場景：名稱、起始層數、收益加成、特殊規則
@@ -789,15 +803,15 @@ const $=id=>document.getElementById(id);
 const cv=$('cv'),ctx=cv.getContext('2d'),stage=$('stage');
 // 其他升級：k, 名稱, 說明, 基本價, 成長率, 上限
 const UP=[
- ['slow','慢速吊鉤','吊鉤速度每級再慢 5%',80,2.9,20],
- ['perf','完美判定','對準的容許範圍變寬',60,2.9,16],
- ['bonus','完美加成','完美落下的獎勵每級 +5%',100,2.1,40],
- ['life','安全網','每局可以多掉 1 塊不結束',1500,9,6],
- ['base','預製地基','開局直接多 3 層',200,2.6,30],
- ['auto','小幫手','依你最高紀錄的場景每秒自動賺錢；10／25／40／60 級收益 x2，5／15／30／50 級學新技能',50,1.95,60]
+ ['slow','慢速吊鉤','吊鉤速度每級再慢 5%',80,2.9,25],
+ ['perf','完美判定','對準的容許範圍變寬',60,2.9,20],
+ ['bonus','完美加成','完美落下的獎勵每級 +5%',100,2.1,100],
+ ['life','安全網','每局可以多掉 1 塊不結束',1500,9,10],
+ ['base','預製地基','開局直接多 3 層',200,2.6,60],
+ ['auto','小幫手','依你最高紀錄的場景每秒自動賺錢；10／25／40／60／80／100／125／150 級收益 x2，5／15／30／50 級學新技能',50,1.95,150]
 ];
 const MS=[25,50,100,150,200]; // 收益等級里程碑：每個 x2
-const AMS=[10,25,40,60];               // 小幫手里程碑
+const AMS=[10,25,40,60,80,100,125,150];               // 小幫手里程碑
 // 小幫手技能：等級、名稱
 const HSK=[[5,'每局幫你接住 1 塊'],[15,'幫你瞄準：完美範圍變寬'],[30,'金色積木出現機率 x2'],[50,'每局開局先幫你疊 10 層']];
 const hs=l=>S.u.auto>=l;
@@ -827,7 +841,8 @@ const ACH=[
  ['e1t','大富翁','累積賺到 $1B',()=>S.life>=1e9,400],
  ['e1qn','富可敵星','累積賺到 $1T',()=>S.life>=1e12,3000],
  ['sk6','衣櫃半滿','解鎖 6 個外觀',()=>stageOf(S.lv)>=5,150],
- ['sk12','全收集','解鎖全部 12 個外觀',()=>stageOf(S.lv)>=11,1500],
+ ['sk12','收藏家','解鎖 12 個外觀',()=>stageOf(S.lv)>=11,1500],
+ ['sk24','全收集','解鎖全部 24 個外觀（Lv 170）',()=>stageOf(S.lv)>=SK.length-1,5e6],
  ['reb','重生','完成第一次轉生',()=>S.reb>=1,500],
  ['tk1','發芽的技能','在升級樹解鎖第一個節點',()=>TL.some(n=>tl(n.id)>0),100],
  ['tkall','萬物之心','升級樹每個節點都至少升到 Lv 1',()=>TL.every(n=>n.soon||tl(n.id)>0),200000],
@@ -847,42 +862,44 @@ try{const s=JSON.parse(localStorage.getItem('stackcash3')||'null');if(s)load(s);
 const save=()=>{S.last=Date.now();try{localStorage.setItem('stackcash3',JSON.stringify(S))}catch(e){}};
 
 /* ---------- 經濟 ---------- */
-const stageOf=lv=>Math.min(SK.length-1,Math.floor(lv/5));
+// 外觀：前 12 個每 5 級解鎖一個，之後（Lv 60 起）每 10 級解鎖一個
+const skinLv=i=>i<12?i*5:50+(i-11)*10;
+const stageOf=lv=>Math.min(SK.length-1,lv<60?Math.floor(lv/5):11+Math.floor((lv-50)/10));
 const mult=()=>2**stageOf(S.lv);
 const msCount=lv=>MS.filter(m=>lv>=m).length;
 // 星塵加成：開根號成長。前期比原本強，後期不會因為「星塵 → 收益 → 更多星塵」越滾越快而爆掉（100 顆時和舊公式一樣是 x21）
-const starM=()=>1+2*Math.sqrt(S.stars);
+const starM=()=>1+Math.sqrt(S.stars);
 /* ================= 升級樹（大地圖版） =================
    每個節點：id、名稱、枝、等級上限、基本價、價格成長、效果鍵、每級數值、模式(add 相加 / mul 相乘)、前置、地圖座標 x,y、顯示格式、效果名稱、需要大樹等級
    枝：r 樹心 / s 天空之枝(陽光) / c 照料之枝(金幣) / g 遊戲之枝(寶石) / t 樹冠(星塵) / d 樹根之枝(金幣) */
 const TL=[
- {id:'r',  n:'樹心',      b:'r',m:5, c:125, g:4,  k:'inc',   v:.10,o:'add',p:[],          x:0,    y:0,    f:'pct',l:'所有收益'},
+ {id:'r',  n:'樹心',      b:'r',m:10, c:125, g:4,  k:'inc',   v:.10,o:'add',p:[],          x:0,    y:0,    f:'pct',l:'所有收益'},
  // 天空之枝：用陽光，強化疊疊樂與陽光
- {id:'s1', n:'曙光',      b:'s',m:10,c:50,  g:1.6,k:'sun',   v:.25,o:'add',p:['r'],       x:-270, y:-190, f:'pct',l:'陽光獲得'},
- {id:'s2', n:'金色葉脈',  b:'s',m:10,c:120, g:1.7,k:'blk',   v:.25,o:'add',p:['s1'],      x:-480, y:-330, f:'pct',l:'每塊收益'},
+ {id:'s1', n:'曙光',      b:'s',m:25,c:50,  g:1.6,k:'sun',   v:.25,o:'add',p:['r'],       x:-270, y:-190, f:'pct',l:'陽光獲得'},
+ {id:'s2', n:'金色葉脈',  b:'s',m:25,c:120, g:1.7,k:'blk',   v:.25,o:'add',p:['s1'],      x:-480, y:-330, f:'pct',l:'每塊收益'},
  {id:'s3', n:'晨露反射',  b:'s',m:5, c:240, g:1.9,k:'sunp',  v:.5, o:'add',p:['s1'],      x:-210, y:-400, f:'pct',l:'完美落下的陽光'},
  {id:'s4', n:'黃金雨',    b:'s',m:5, c:600, g:2,  k:'gold',  v:.03,o:'add',p:['s2'],      x:-680, y:-480, f:'pct',l:'金色積木機率'},
  {id:'s6', n:'高空日照',  b:'s',m:5, c:1000,g:2.1,k:'sunx',  v:1.3,o:'mul',p:['s3'],      x:-310, y:-590, f:'x',  l:'陽光獲得'},
  {id:'s5', n:'點石成金',  b:'s',m:4, c:1800,g:2.2,k:'goldx', v:5,  o:'add',p:['s4'],      x:-850, y:-640, f:'gx', l:'金色積木倍率'},
- {id:'s7', n:'光合作用',  b:'s',m:5, c:3000,g:2.2,k:'sauto', v:.25,o:'add',p:['s6'],      x:-480, y:-760, f:'ps', l:'自動產生陽光'},
+ {id:'s7', n:'光合作用',  b:'s',m:10, c:3000,g:2.2,k:'sauto', v:.25,o:'add',p:['s6'],      x:-480, y:-760, f:'ps', l:'自動產生陽光'},
  {id:'s10',n:'太陽風',    b:'s',m:5, c:6000,g:2.3,k:'combo', v:.02,o:'add',p:['s7'],      x:-250, y:-900, f:'pct',l:'每次連擊加成'},
  {id:'s8', n:'財源滾滾',  b:'s',m:3, c:1e4, g:3,  k:'incx',  v:1.5,o:'mul',p:['s5'],      x:-720, y:-880, f:'x',  l:'所有收益'},
  {id:'s9', n:'日冕',      b:'s',m:5, c:4e4, g:2.5,k:'sunx',  v:1.5,o:'mul',p:['s8'],      x:-540, y:-1050,f:'x',  l:'陽光獲得'},
  // 照料之枝：用金幣，照顧大樹、果實、小幫手
  {id:'k1', n:'好土壤',    b:'c',m:5, c:500, g:2,  k:'wcost', v:.85,o:'mul',p:['r'],       x:-300, y:140,  f:'xr', l:'澆水的陽光和水'},
- {id:'k2', n:'雨露',      b:'c',m:3, c:2000,g:3,  k:'wgrow', v:1,  o:'add',p:['k1'],      x:-530, y:50,   f:'wg', l:'每次澆水成長'},
+ {id:'k2', n:'雨露',      b:'c',m:5, c:2000,g:3,  k:'wgrow', v:1,  o:'add',p:['k1'],      x:-530, y:50,   f:'wg', l:'每次澆水成長'},
  {id:'k8', n:'節水灌溉',  b:'c',m:5, c:5000,g:2.2,k:'wsun',  v:.85,o:'mul',p:['k1'],      x:-480, y:290,  f:'xr', l:'澆水的陽光花費'},
  {id:'k3', n:'沃土',      b:'c',m:2, c:7500,g:4,  k:'fert',  v:1,  o:'add',p:['k2'],      x:-760, y:130,  f:'fc', l:'施肥花費'},
- {id:'k10',n:'小幫手加薪',b:'c',m:10,c:2500,g:1.9,k:'auto',  v:.25,o:'add',p:['k8'],      x:-300, y:440,  f:'pct',l:'小幫手收益'},
+ {id:'k10',n:'小幫手加薪',b:'c',m:25,c:2500,g:1.9,k:'auto',  v:.25,o:'add',p:['k8'],      x:-300, y:440,  f:'pct',l:'小幫手收益'},
  {id:'k9', n:'夜間工作',  b:'c',m:6, c:12500,g:2.2,k:'offh', v:2,  o:'add',p:['k8'],      x:-690, y:380,  f:'n',  l:'離線收益上限',u:' 小時'},
  {id:'k4', n:'豐收',      b:'c',m:5, c:12500,g:2.5,k:'fval', v:1,  o:'add',p:['k3'],      x:-970, y:40,   f:'pct',l:'果實價值',lv:15},
  {id:'k6', n:'早熟',      b:'c',m:5, c:37500,g:2.4,k:'fspd', v:.2, o:'add',p:['k4'],      x:-990, y:-140, f:'pct',l:'結果速度',lv:15},
  {id:'k5', n:'果實滿枝',  b:'c',m:5, c:5e4, g:2.4,k:'fcap',  v:1,  o:'add',p:['k4'],      x:-1150,y:150,  f:'n',  l:'果實上限',u:' 顆',lv:15},
- {id:'k7', n:'生生不息',  b:'c',m:5, c:2.5e5,g:3, k:'treeB', v:.01,o:'add',p:['k5'],      x:-1320,y:40,   f:'tb', l:'大樹每級加成'},
+ {id:'k7', n:'生生不息',  b:'c',m:15, c:2.5e5,g:3, k:'treeB', v:.01,o:'add',p:['k5'],      x:-1320,y:40,   f:'tb', l:'大樹每級加成'},
  // 遊戲之枝：用寶石，強化疊疊樂的手感
  {id:'g1', n:'穩定手感',  b:'g',m:5, c:3,   g:1.6,k:'pwin',  v:2,  o:'add',p:['r'],       x:300,  y:140,  f:'n',  l:'完美判定範圍',u:'px'},
  {id:'g2', n:'緩慢時光',  b:'g',m:5, c:4,   g:1.6,k:'hook',  v:.95,o:'mul',p:['g1'],      x:520,  y:40,   f:'xr', l:'吊鉤速度'},
- {id:'g10',n:'完美獎勵',  b:'g',m:10,c:5,   g:1.6,k:'pbon',  v:.1, o:'add',p:['g2'],      x:590,  y:-150, f:'pct',l:'完美落下獎勵'},
+ {id:'g10',n:'完美獎勵',  b:'g',m:20,c:5,   g:1.6,k:'pbon',  v:.1, o:'add',p:['g2'],      x:590,  y:-150, f:'pct',l:'完美落下獎勵'},
  {id:'g11',n:'穩如磐石',  b:'g',m:5, c:6,   g:1.8,k:'sway',  v:.85,o:'mul',p:['g10'],     x:800,  y:-250, f:'xr', l:'塔的搖晃'},
  {id:'g7', n:'寶石運',    b:'g',m:5, c:6,   g:2,  k:'gemc',  v:.01,o:'add',p:['g1'],      x:330,  y:320,  f:'pct',l:'完美落下掉寶石'},
  {id:'g3', n:'守護葉',    b:'g',m:2, c:7,   g:2.5,k:'life',  v:1,  o:'add',p:['g2'],      x:740,  y:130,  f:'n',  l:'每局安全網',u:' 次'},
@@ -898,8 +915,16 @@ const TL=[
  {id:'t4', n:'星辰之眼',  b:'t',m:3, c:5,   g:2.5,k:'sunx',  v:1.5,o:'mul',p:['t2'],      x:130,  y:-730, f:'x',  l:'陽光獲得'},
  {id:'top',n:'世界之心',  b:'t',m:3, c:10,  g:3,  k:'incx',  v:2,  o:'mul',p:['t3','t4'], x:260,  y:-940, f:'x',  l:'所有收益'},
  // 樹根之枝：用金幣，往地底延伸（下一階段開放地心挖礦）
+ {id:'e1', n:'天降甘霖',  b:'e',m:5, c:5e5, g:2.2,k:'wwat',  v:.9, o:'mul',p:['r'],       x:560,  y:-420, f:'xr',l:'澆水要的水',lv:25},
+ {id:'e3', n:'樹液結晶',  b:'e',m:10,c:1e6, g:1.9,k:'inc',   v:.1, o:'add',p:['e1'],      x:600,  y:-640, f:'pct',l:'所有收益',lv:25},
+ {id:'e2', n:'養分循環',  b:'e',m:5, c:2e6, g:2.3,k:'wnut',  v:.9, o:'mul',p:['e1'],      x:800,  y:-520, f:'xr',l:'澆水要的養分',lv:30},
+ {id:'e4', n:'遠航之翼',  b:'e',m:5, c:5e6, g:2.4,k:'advhp', v:.1, o:'add',p:['e2'],      x:1020, y:-440, f:'pct',l:'冒險隊伍生命',lv:35},
+ {id:'e5', n:'雲海豐收',  b:'e',m:5, c:8e6, g:2.4,k:'nutg',  v:.15,o:'add',p:['e2'],      x:1020, y:-660, f:'pct',l:'冒險帶回的養分',lv:35},
+ {id:'e6', n:'根深葉茂',  b:'e',m:10,c:2e7, g:2,  k:'treeB', v:.01,o:'add',p:['e3','e2'], x:800,  y:-820, f:'pct',l:'大樹加成每級',lv:40},
+ {id:'e7', n:'星辰樹液',  b:'e',m:5, c:1e8, g:3,  k:'incx',  v:1.3,o:'mul',p:['e6'],      x:800,  y:-1060,f:'x',  l:'所有收益',lv:50},
+ {id:'e8', n:'永恆之心',  b:'e',m:3, c:1e10,g:6,  k:'incx',  v:2,  o:'mul',p:['e7','e5'], x:1040, y:-1200,f:'x',  l:'所有收益',lv:65},
  {id:'ring',n:'年輪',      b:'r',m:200,c:2e5,g:1.35,k:'inc',  v:.03,o:'add',p:['r'],       x:-40,  y:-200, f:'pct',l:'所有收益（可以一直升）',lv:15},
- {id:'d1', n:'深根',      b:'d',m:5, c:1250,g:2,  k:'inc',   v:.05,o:'add',p:['r'],       x:0,    y:220,  f:'pct',l:'所有收益'},
+ {id:'d1', n:'深根',      b:'d',m:15, c:1250,g:2,  k:'inc',   v:.05,o:'add',p:['r'],       x:0,    y:220,  f:'pct',l:'所有收益'},
  {id:'d2', n:'地下水脈',  b:'d',m:3, c:12500,g:3, k:'wcost', v:.9, o:'mul',p:['d1'],      x:0,    y:400,  f:'xr', l:'澆水的陽光和水'},
  {id:'d3', n:'地心入口',  b:'d',m:1, c:20000,g:1, k:'mine',  v:1,  o:'add',p:['d2'],      x:0,    y:580,  f:'unlock',l:'開放小遊戲：地心挖礦'},
  // 樹根之枝（往下）：用挖到的礦石購買
@@ -913,7 +938,7 @@ const TL=[
  {id:'m13',n:'地底收益',  b:'d',cur:'o_au',  m:5,c:6, g:1.9,k:'inc',   v:.1, o:'add',p:['m5'],x:-210,y:1120,f:'pct',l:'所有收益'},
  {id:'m8', n:'防毒濾網',  b:'d',cur:'o_ag',  m:4,c:10,g:1.9,k:'mgas',  v:.75,o:'mul',p:['m6'],x:210, y:1120,f:'xr', l:'毒氣傷害'},
  {id:'m10',n:'樹根滋養',  b:'d',cur:'o_cu',  m:5,c:20,g:1.8,k:'wwat',  v:.9, o:'mul',p:['m3'],x:430, y:1120,f:'xr', l:'大樹需要的水'},
- {id:'m11',n:'礦石積木',  b:'d',cur:'o_fe',  m:10,c:12,g:1.8,k:'blk',  v:.2, o:'add',p:['m3'],x:650, y:1120,f:'pct',l:'疊疊樂每塊收益'},
+ {id:'m11',n:'礦石積木',  b:'d',cur:'o_fe',  m:20,c:12,g:1.8,k:'blk',  v:.2, o:'add',p:['m3'],x:650, y:1120,f:'pct',l:'疊疊樂每塊收益'},
  {id:'m12',n:'金屬地基',  b:'d',cur:'o_ag',  m:5,c:12,g:2, k:'start', v:5,  o:'add',p:['m11'],x:650,y:1300,f:'n',  l:'疊疊樂開局層數',u:' 層'},
  {id:'m14',n:'化石研究',  b:'d',cur:'o_em',  m:5,c:5, g:2, k:'fos',   v:.3, o:'add',p:['m7'],x:-430,y:1300,f:'pct',l:'化石出現率'},
  {id:'m9', n:'隔熱塗層',  b:'d',cur:'o_au',  m:5,c:8, g:2, k:'mheat', v:.85,o:'mul',p:['m8'],x:210, y:1300,f:'xr', l:'高溫和岩漿傷害'},
@@ -931,7 +956,7 @@ const TL=[
  {id:'sp5',n:'新的棲位',  b:'p',cur:'seed',  m:2,c:3, g:3, k:'slot', v:1,  o:'add',p:['sp4','sp3'],x:-1420,y:720,f:'n',l:'樹靈棲位',u:' 個'},
  {id:'m19',n:'地核共振',  b:'d',cur:'o_core',m:3,c:3, g:3, k:'incx',  v:1.5,o:'mul',p:['m15','m18'],x:0,y:1840,f:'x',l:'所有收益'}
 ];
-const TLB={p:['樹靈之枝','sap','#2fa39a'],r:['樹心','sap','#8a5a3a'],s:['天空之枝','sun','#e09a00'],c:['照料之枝','sap','#2f9e5a'],g:['遊戲之枝','gem','#4d8fe0'],t:['樹冠','star','#8b5cf6'],d:['樹根之枝','sap','#8a5a3a']};
+const TLB={p:['樹靈之枝','sap','#2fa39a'],r:['樹心','sap','#8a5a3a'],s:['天空之枝','sun','#e09a00'],c:['照料之枝','sap','#2f9e5a'],g:['遊戲之枝','gem','#4d8fe0'],t:['樹冠','star','#8b5cf6'],e:['永恆之枝','sap','#2b8fb3'],d:['樹根之枝','sap','#8a5a3a']};
 const CUR={sap:['樹液','sap'],fossil:['化石','fossil'],seed:['古代種子','aseed'],coin:['金幣','coins'],sun:['陽光','sun'],gem:['寶石','gems'],star:['星塵','stars'],o_coal:['煤','ore.coal'],o_cu:['銅','ore.cu'],o_fe:['鐵','ore.fe'],o_ag:['銀','ore.ag'],o_au:['金','ore.au'],o_em:['翡翠','ore.em'],o_ru:['紅寶石','ore.ru'],o_di:['鑽石','ore.di'],o_core:['地核晶','ore.core']};
 const getRes=c=>{const p=CUR[c][1];return p.startsWith('ore.')?Math.floor(S.ore[p.slice(4)]||0):(S[p]||0)};
 const addRes=(c,v)=>{const p=CUR[c][1];if(p.startsWith('ore.'))S.ore[p.slice(4)]=(S.ore[p.slice(4)]||0)+v;else S[p]=(S[p]||0)+v};
@@ -1156,20 +1181,46 @@ function rr(x,y,w,h,r){ctx.beginPath();ctx.roundRect?ctx.roundRect(x,y,w,h,r):ct
 function block(x,y,w,i,sk){
   const s=SK[sk],h=BH-2,col=s.c[i%s.c.length];
   ctx.save();rr(x,y,w,h,s.p==='brick'?2:5);
-  if(s.p==='rainbow'){const g=ctx.createLinearGradient(x,0,x+w,0),o=(performance.now()/40+i*25)%360;for(let k=0;k<=6;k++)g.addColorStop(k/6,'hsl('+(o+k*60)%360+',90%,62%)');ctx.fillStyle=g}
+  const T=performance.now()/1000;
+  // 有自己底色的外觀：先畫底
+  if(s.p==='rainbow')ctx.fillStyle='hsl('+(i*38)%360+',85%,72%)';
+  else if(s.p==='gold'){const g=ctx.createLinearGradient(0,y,0,y+h);g.addColorStop(0,'#fff0a8');g.addColorStop(.45,'#f5c430');g.addColorStop(1,'#c98d00');ctx.fillStyle=g}
+  else if(s.p==='diamond'){const g=ctx.createLinearGradient(x,y,x+w,y+h);g.addColorStop(0,'#d8f7ff');g.addColorStop(.5,'#8fd8ef');g.addColorStop(1,'#bdefff');ctx.fillStyle=g}
+  else if(s.p==='galaxy'){const g=ctx.createLinearGradient(x,y,x+w,y+h);g.addColorStop(0,'#1a1446');g.addColorStop(1,'#2d1b69');ctx.fillStyle=g}
+  else if(s.p==='amber'){const g=ctx.createLinearGradient(0,y,0,y+h);g.addColorStop(0,'#ffcf6a');g.addColorStop(1,'#d97a1a');ctx.fillStyle=g}
+  else if(s.p==='jade'){const g=ctx.createLinearGradient(x,y,x+w,y);g.addColorStop(0,'#278a5c');g.addColorStop(.5,'#3cbf84');g.addColorStop(1,'#278a5c');ctx.fillStyle=g}
   else ctx.fillStyle=s.p==='neon'?'#151530':col;
   ctx.fill();ctx.clip();
   if(s.p==='stud'){ctx.fillStyle='rgba(255,255,255,.35)';for(let q=x+12;q<x+w-6;q+=22){ctx.beginPath();ctx.ellipse(q,y+10,6,4,0,0,7);ctx.fill()}}
   if(s.p==='melon'){ctx.fillStyle='#2f8f3f';ctx.fillRect(x,y+h-7,w,7);ctx.fillStyle='#bff0a0';ctx.fillRect(x,y+h-10,w,3);ctx.fillStyle='#2b1a14';for(let q=x+10+(i%2)*9;q<x+w-6;q+=18){ctx.beginPath();ctx.ellipse(q,y+9+((q*7)%5),2,3.2,.3,0,7);ctx.fill()}}
   if(s.p==='lava'){const gl=.6+.4*Math.sin(performance.now()/300+i);ctx.strokeStyle='rgba(255,'+(110+80*gl|0)+',30,'+gl+')';ctx.lineWidth=3;ctx.shadowColor='#ff7a1a';ctx.shadowBlur=10;ctx.beginPath();for(let q=x+8;q<x+w;q+=34){ctx.moveTo(q,y);ctx.lineTo(q+8,y+h*.45);ctx.lineTo(q+2,y+h)}ctx.moveTo(x,y+h*.45);ctx.lineTo(x+w,y+h*.55);ctx.stroke();ctx.shadowBlur=0}
   if(s.p==='neon'){ctx.strokeStyle=col;ctx.lineWidth=3;ctx.shadowColor=col;ctx.shadowBlur=12;ctx.strokeRect(x+3,y+3,w-6,h-6);ctx.shadowBlur=0}
-  if(s.p==='diamond'){for(let q=x,k=0;q<x+w;q+=h,k++){ctx.fillStyle=k%2?'rgba(255,255,255,.55)':'rgba(120,200,230,.35)';ctx.beginPath();ctx.moveTo(q,y+h);ctx.lineTo(q+h/2,y);ctx.lineTo(q+h,y+h);ctx.fill()}const sp=(performance.now()/500+i)%4;if(sp<1){ctx.fillStyle='#fff';ctx.fillRect(x+w*((i*37%10)/10)-1,y+4,2,10);ctx.fillRect(x+w*((i*37%10)/10)-5,y+8,10,2)}}
+  if(s.p==='diamond'){ctx.strokeStyle='rgba(60,140,180,.45)';ctx.lineWidth=1;for(let q=x-h,k=0;q<x+w;q+=h*.9,k++){ctx.fillStyle=k%3===0?'rgba(255,255,255,.55)':k%3===1?'rgba(110,190,225,.35)':'rgba(255,255,255,.15)';ctx.beginPath();ctx.moveTo(q,y+h*.5);ctx.lineTo(q+h*.45,y);ctx.lineTo(q+h*.9,y+h*.5);ctx.lineTo(q+h*.45,y+h);ctx.closePath();ctx.fill();ctx.stroke()}
+    const sp=(T*1.3+i*.37)%3;if(sp<.5){const sx=x+w*((i*37%10)/10),sy=y+h*.4,r=4+sp*6;ctx.fillStyle='#fff';ctx.beginPath();ctx.moveTo(sx,sy-r);ctx.lineTo(sx+1.2,sy-1.2);ctx.lineTo(sx+r,sy);ctx.lineTo(sx+1.2,sy+1.2);ctx.lineTo(sx,sy+r);ctx.lineTo(sx-1.2,sy+1.2);ctx.lineTo(sx-r,sy);ctx.lineTo(sx-1.2,sy-1.2);ctx.fill()}}
   if(s.p==='wood'){ctx.strokeStyle='rgba(120,70,30,.28)';ctx.lineWidth=1.5;for(let k=0;k<3;k++){ctx.beginPath();ctx.moveTo(x,y+7+k*6);for(let q=0;q<=w;q+=20)ctx.lineTo(x+q,y+7+k*6+Math.sin((q+i*37+k*11)/14)*1.6);ctx.stroke()}}
   if(s.p==='brick'){ctx.fillStyle='rgba(255,230,210,.55)';ctx.fillRect(x,y+h/2-1,w,2);const o=i%2?0:14;for(let q=x+o;q<x+w;q+=28)ctx.fillRect(q,y,2,h/2);for(let q=x+o+14;q<x+w;q+=28)ctx.fillRect(q,y+h/2,2,h/2)}
   if(s.p==='candy'){ctx.fillStyle='rgba(255,255,255,.55)';for(let q=x-h;q<x+w;q+=18){ctx.beginPath();ctx.moveTo(q,y+h);ctx.lineTo(q+8,y+h);ctx.lineTo(q+8+h,y);ctx.lineTo(q+h,y);ctx.fill()}}
   if(s.p==='ice'){ctx.fillStyle='rgba(255,255,255,.5)';ctx.beginPath();ctx.moveTo(x+w*.15,y);ctx.lineTo(x+w*.3,y);ctx.lineTo(x+w*.18,y+h);ctx.lineTo(x+w*.03,y+h);ctx.fill();ctx.fillRect(x+w*.36,y,5,h)}
-  if(s.p==='gold'){const ph=((performance.now()/1600)+i*.07)%1.6-.3,g=ctx.createLinearGradient(x,y,x+w,y+h);g.addColorStop(Math.min(1,Math.max(0,ph-.1)),'rgba(255,255,255,0)');g.addColorStop(Math.min(1,Math.max(0,ph)),'rgba(255,255,255,.6)');g.addColorStop(Math.min(1,Math.max(0,ph+.1)),'rgba(255,255,255,0)');ctx.fillStyle=g;ctx.fillRect(x,y,w,h)}
-  if(s.p==='galaxy'){ctx.fillStyle='rgba(255,255,255,.85)';for(let k=0;k<w/14;k++)ctx.fillRect(x+((k*53+i*31)%Math.max(1,w)),y+((k*17+i*7)%h),1.6,1.6)}
+  if(s.p==='gold'){ctx.strokeStyle='rgba(150,100,0,.45)';ctx.lineWidth=1.5;rr(x+6,y+5,w-12,h-11,3);ctx.stroke();ctx.fillStyle='rgba(255,255,255,.25)';ctx.fillRect(x+7,y+6,w-14,3);
+    const ph=((T/1.6)+i*.07)%1.6-.3,g=ctx.createLinearGradient(x,y,x+w,y+h);g.addColorStop(Math.min(1,Math.max(0,ph-.08)),'rgba(255,255,255,0)');g.addColorStop(Math.min(1,Math.max(0,ph)),'rgba(255,255,255,.7)');g.addColorStop(Math.min(1,Math.max(0,ph+.08)),'rgba(255,255,255,0)');ctx.fillStyle=g;ctx.fillRect(x,y,w,h)}
+  if(s.p==='galaxy'){for(const[cx2,cc]of[[.3,'255,79,216'],[.72,'40,224,200']]){const px=x+w*((cx2+i*.13)%1),g=ctx.createRadialGradient(px,y+h/2,0,px,y+h/2,h*1.1);g.addColorStop(0,'rgba('+cc+',.55)');g.addColorStop(1,'rgba('+cc+',0)');ctx.fillStyle=g;ctx.fillRect(x,y,w,h)}
+    for(let k=0;k<w/10;k++){const tw=.5+.5*Math.sin(T*3+k+i);ctx.fillStyle='rgba(255,255,255,'+(.4+.6*tw)+')';const sz=k%5?1.3:2.4;ctx.fillRect(x+((k*53+i*31)%Math.max(1,w)),y+((k*17+i*7)%h),sz,sz)}}
+  if(s.p==='rainbow'){ctx.strokeStyle='rgba(255,255,255,.55)';ctx.lineWidth=3;for(let q=x+12;q<x+w;q+=34){ctx.beginPath();ctx.arc(q+10,y+h+2,12,Math.PI,0);ctx.stroke()}ctx.fillStyle='hsl('+(i*38+20)%360+',85%,80%)';ctx.fillRect(x,y+h-9,w,3)}
+  if(s.p==='celadon'){ctx.strokeStyle='rgba(60,100,85,.35)';ctx.lineWidth=.8;ctx.beginPath();for(let q=0;q<w/12;q++){const a1=x+((q*41+i*13)%w),b1=y+((q*17+i*5)%h);ctx.moveTo(a1,b1);ctx.lineTo(a1+6,b1+4);ctx.lineTo(a1+4,b1+9)}ctx.stroke();ctx.fillStyle='rgba(255,255,255,.3)';ctx.beginPath();ctx.ellipse(x+w*.3,y+h*.35,w*.22,h*.18,0,0,7);ctx.fill()}
+  if(s.p==='bamboo'){for(let q=x+((i*17)%30);q<x+w;q+=30){ctx.fillStyle='#4f8a2c';ctx.fillRect(q,y,3,h);ctx.fillStyle='rgba(255,255,255,.25)';ctx.fillRect(q+3,y,2,h)}ctx.fillStyle='#3f7a22';const lx=x+w*.7;ctx.beginPath();ctx.ellipse(lx,y+6,9,3,-.4,0,7);ctx.fill()}
+  if(s.p==='marble'){ctx.strokeStyle='rgba(120,112,100,.45)';ctx.lineWidth=1.2;for(let k=0;k<2;k++){ctx.beginPath();ctx.moveTo(x+((i*31+k*60)%w),y);ctx.bezierCurveTo(x+((i*31+k*60)%w)+20,y+h*.4,x+((i*53+k*40)%w)-10,y+h*.6,x+((i*53+k*40)%w)+14,y+h);ctx.stroke()}ctx.strokeStyle='rgba(190,170,120,.35)';ctx.lineWidth=.8;ctx.beginPath();ctx.moveTo(x,y+h*.6);ctx.quadraticCurveTo(x+w*.5,y+h*.2,x+w,y+h*.7);ctx.stroke()}
+  if(s.p==='agate'){const cs=['#e7b08a','#a84a2c','#f3d2b8','#8c3a20'];for(let k=0;k<4;k++){ctx.strokeStyle=cs[(k+i)%4];ctx.lineWidth=2.4;ctx.beginPath();for(let q=0;q<=w;q+=8)ctx.lineTo(x+q,y+5+k*5+Math.sin(q/18+i+k)*2.2);ctx.stroke()}}
+  if(s.p==='coral'){ctx.fillStyle='rgba(255,220,210,.7)';for(let k=0;k<w/9;k++){ctx.beginPath();ctx.arc(x+((k*29+i*11)%w),y+5+((k*13+i*7)%(h-10)),1.6+(k%3),0,7);ctx.fill()}}
+  if(s.p==='aurora'){for(const[c2,o]of[['63,255,176',0],['178,107,255',1.7]]){ctx.strokeStyle='rgba('+c2+',.75)';ctx.lineWidth=5;ctx.shadowColor='rgba('+c2+',1)';ctx.shadowBlur=10;ctx.beginPath();for(let q=0;q<=w;q+=6)ctx.lineTo(x+q,y+h*.5+Math.sin(q/22+T*1.5+i*.6+o)*h*.28);ctx.stroke()}ctx.shadowBlur=0}
+  if(s.p==='amber'){ctx.fillStyle='rgba(255,255,255,.45)';for(let k=0;k<4;k++){ctx.beginPath();ctx.arc(x+((k*47+i*19)%w),y+6+((k*11+i*3)%(h-12)),1.5+k%2*1.5,0,7);ctx.fill()}ctx.fillStyle='rgba(90,40,10,.35)';ctx.beginPath();ctx.ellipse(x+w*((i*7%10)/10),y+h*.55,3,1.6,.5,0,7);ctx.fill()}
+  if(s.p==='obsidian'){const ph=(T*.4+i*.11)%2-.5,g=ctx.createLinearGradient(x,y,x+w,y+h);g.addColorStop(Math.max(0,Math.min(1,ph-.15)),'rgba(140,100,220,0)');g.addColorStop(Math.max(0,Math.min(1,ph)),'rgba(160,120,240,.5)');g.addColorStop(Math.max(0,Math.min(1,ph+.15)),'rgba(140,100,220,0)');ctx.fillStyle=g;ctx.fillRect(x,y,w,h);
+    ctx.strokeStyle='rgba(255,255,255,.12)';ctx.lineWidth=1;ctx.beginPath();for(let q=x;q<x+w;q+=26){ctx.moveTo(q,y+h);ctx.lineTo(q+13,y);ctx.lineTo(q+26,y+h)}ctx.stroke()}
+  if(s.p==='jade'){ctx.strokeStyle='rgba(220,255,235,.35)';ctx.lineWidth=2;for(let k=0;k<2;k++){const cx3=x+((i*37+k*55)%w);ctx.beginPath();ctx.arc(cx3,y+h*.5,6,0,Math.PI*1.5);ctx.arc(cx3+8,y+h*.5,4,Math.PI,Math.PI*2.4);ctx.stroke()}}
+  if(s.p==='circuit'){ctx.strokeStyle='#3dff9e';ctx.lineWidth=1.6;ctx.shadowColor='#3dff9e';ctx.shadowBlur=4;ctx.beginPath();for(let q=x+((i*13)%20);q<x+w-10;q+=24){ctx.moveTo(q,y+h);ctx.lineTo(q,y+h*.55);ctx.lineTo(q+10,y+h*.3);ctx.lineTo(q+20,y+h*.3)}ctx.stroke();ctx.fillStyle='#3dff9e';for(let q=x+((i*13)%20);q<x+w-10;q+=24){ctx.beginPath();ctx.arc(q+20,y+h*.3,2.2,0,7);ctx.fill()}
+    const pk=(T*.8+i*.3)%1;ctx.fillStyle='#eafff3';ctx.beginPath();ctx.arc(x+w*pk,y+h*.3,2,0,7);ctx.fill();ctx.shadowBlur=0}
+  if(s.p==='sakura'){for(let k=0;k<w/26;k++){const fx=x+((k*37+i*23)%w),fy=y+5+((k*11+i*7)%(h-10));ctx.fillStyle='#ff8fb1';for(let q=0;q<5;q++){const a2=q*1.2566+i;ctx.beginPath();ctx.ellipse(fx+Math.cos(a2)*3.2,fy+Math.sin(a2)*3.2,2.6,1.7,a2,0,7);ctx.fill()}ctx.fillStyle='#fff4b8';ctx.beginPath();ctx.arc(fx,fy,1.4,0,7);ctx.fill()}}
+  if(s.p==='worldtree'){ctx.fillStyle='rgba(0,0,0,.18)';for(let q=x+((i*9)%14);q<x+w;q+=14)ctx.fillRect(q,y,3,h);ctx.fillStyle='rgba(255,255,255,.08)';for(let q=x+((i*9)%14)+5;q<x+w;q+=14)ctx.fillRect(q,y,2,h);
+    for(let k=0;k<w/40;k++){const gl=.5+.5*Math.sin(T*2+k*1.7+i);const rx=x+((k*43+i*19)%w),ry=y+h*.5;ctx.fillStyle='rgba(125,255,176,'+(.4+.6*gl)+')';ctx.shadowColor='#7dffb0';ctx.shadowBlur=8*gl;ctx.beginPath();ctx.moveTo(rx,ry-5);ctx.lineTo(rx+3,ry);ctx.lineTo(rx,ry+5);ctx.lineTo(rx-3,ry);ctx.fill()}ctx.shadowBlur=0}
   ctx.fillStyle='rgba(255,255,255,.32)';ctx.fillRect(x,y,w,4);
   ctx.fillStyle='rgba(0,0,0,.2)';ctx.fillRect(x,y+h-5,w,5);
   ctx.restore();
@@ -1590,10 +1641,10 @@ function ui(){
   $('lv').textContent='Lv '+S.lv;{const pl=upPlan();$('cost').textContent='$'+fmt(pl.sum)+(pl.n>1?' (+'+pl.n+')':'')}
   const st=stageOf(S.lv);
   if(st>=SK.length-1){$('next').textContent='已解鎖全部外觀！繼續升級可提高每塊收益';$('pb').style.width='100%'}
-  else{const left=(st+1)*5-S.lv;$('next').textContent='再升 '+left+' 級解鎖「'+SK[st+1].n+'」外觀，收益再 x2';$('pb').style.width=((S.lv%5)/5*100)+'%'}
+  else{const nl=skinLv(st+1),pl=skinLv(st),left=nl-S.lv;$('next').textContent='再升 '+left+' 級解鎖「'+SK[st+1].n+'」外觀，收益再 x2';$('pb').style.width=((S.lv-pl)/(nl-pl)*100)+'%'}
   const nm=MS.find(m=>m>S.lv);$('ms').textContent=nm?'下一個里程碑：Lv '+nm+' 收益再 x2（已達成 '+msCount(S.lv)+' 個）':'所有里程碑都達成了！';
   $('ups').innerHTML=UP.map(u=>{const l=S.u[u[0]],mx=l>=u[5],c=ucost(u);const ex=u[0]==='auto'?(()=>{const nx=HSK.find(h=>h[0]>l),got=HSK.filter(h=>h[0]<=l).map(h=>h[1]);return (got.length?'<br>已會：'+got.join('、'):'')+(nx?'<br>Lv '+nx[0]+' 學會：'+nx[1]:'')})():'';return '<div class="ur"><b>'+u[1]+'<i>Lv '+l+'/'+u[5]+'</i></b><small>'+u[2]+ex+'</small><button data-k="'+u[0]+'"'+(mx||S.coins<c?' disabled':'')+'>'+(mx?'已滿級':(()=>{const p=uPlan(u);return '$'+fmt(p.sum)+(p.n>1?' +'+p.n:'')})())+'</button></div>'}).join('');
-  $('skins').innerHTML=SK.map((s,i)=>'<button class="sk'+(i===S.sel?' sel':'')+'" data-i="'+i+'"'+(i>st?' disabled':'')+'><span class="sw" style="background:'+s.sw+'"></span><b>'+s.n+'</b><small>'+(i>st?'Lv '+i*5:'x'+fmt(2**i))+'</small></button>').join('');
+  $('skins').innerHTML=SK.map((s,i)=>'<button class="sk'+(i===S.sel?' sel':'')+'" data-i="'+i+'"'+(i>st?' disabled':'')+'><span class="sw" style="background:'+s.sw+'"></span><b>'+s.n+'</b><small>'+(i>st?'Lv '+skinLv(i):'x'+fmt(2**i))+'</small></button>').join('');
   $('achs').innerHTML=ACH.map((a,i)=>[a,i]).sort((x,y)=>achRank(x[0])-achRank(y[0])||x[1]-y[1]).map(([a])=>{const d=S.done[a[0]],g=S.got[a[0]];return '<div class="ach'+(d?' d':'')+'"><div><b>'+a[1]+'</b><small>'+a[2]+'</small></div><button data-a="'+a[0]+'"'+(!d||g?' disabled':'')+'>'+(g?'已領取':d?'領 樹液 '+fmt(achSap(a)):'未完成')+'</button></div>'}).join('');
   const un=ACH.filter(a=>S.done[a[0]]&&!S.got[a[0]]).length;$('achDot').textContent=un||'';
   $('stars').textContent=fmt(S.stars);$('gems').textContent=fmt(S.gems);$('starm').textContent='x'+(starM()<100?starM().toFixed(1):fmt(starM()));if(!$('t-zone').hidden)zuUI();
@@ -1715,10 +1766,10 @@ const cam3={yaw:.7,pitch:.36,dist:20,zm:1,fit:1,auto:true,idle:0};
 const HQ={rs:1,acc:0,n:0,good:0,seam:true,min:()=>Math.max(.5,Math.min(1,1/Math.min(2,window.devicePixelRatio||1)))};
 function hsize(){htopH=htopMeasure();const r=hstage.getBoundingClientRect();HW=r.width;HH=r.height;const d=Math.min(2,window.devicePixelRatio||1)*HQ.rs;HQ.seam=true;hv.width=HW*d;hv.height=HH*d;HBX.setTransform(d,0,0,d,0,0);if(GLON){const g2=Math.min(2,window.devicePixelRatio||1);GLR.c.width=HW*g2;GLR.c.height=HH*g2;hov.width=HW*g2;hov.height=HH*g2;HOX.setTransform(g2,0,0,g2,0,0)}HDPR=d;FOC=Math.min(HW*1.3,HH*1.15)*1.45}
 // 成長階段：從這個等級開始叫什麼
-const STAGES=[[0,'種子'],[1,'幼苗'],[3,'小樹'],[6,'大樹'],[10,'開花的樹'],[15,'結果的樹'],[20,'神木'],[30,'世界樹']];
+const STAGES=[[0,'種子'],[1,'幼苗'],[3,'小樹'],[6,'大樹'],[10,'開花的樹'],[15,'結果的樹'],[20,'神木'],[30,'世界樹'],[40,'天空之樹'],[55,'星辰之樹'],[70,'永恆之樹'],[80,'宇宙之樹']];
 const stageName=l=>STAGES.filter(s=>l>=s[0]).pop()[1];
 const nextStage=l=>STAGES.find(s=>s[0]>l);
-const TMAX=50;
+const TMAX=80;
 const wcost=()=>Math.ceil(20*1.6**S.tree.lv*TM('wcost'));      // 澆一次水 = 這級進度的 20%
 const fruitCap=()=>S.tree.lv<15?0:3+Math.floor((S.tree.lv-15)/5)+TA('fcap');
 const fruitSec=()=>600/(1+(S.tree.lv-15)*.1)/(1+TA('fspd'));
@@ -2256,7 +2307,7 @@ const rootZone=()=>{let z=0;for(let i=0;i<ZONES.length;i++)if(S.tree.lv>=(TREQ[i
 const rootCap=()=>{const z=rootZone();return z+1<ZONES.length?ZONES[z+1].d-.5:1e9};
 const STUCK=.55;                               // 力量 / 硬度 低於這個就鑽不動
 // 鑽頭機升級：id、名稱、說明、最高等級
-const MUP=[['drill','鑽頭','力量越大能鑽越深',30],['fuel','馬達','鑽得更快',15],['cool','散熱','發熱更慢、過熱恢復更快',15],['cargo','貨艙','一趟能裝更多礦',15],['armor','外殼','承受岩漿和毒氣',15]];
+const MUP=[['drill','鑽頭','力量越大能鑽越深',45],['fuel','馬達','鑽得更快',25],['cool','散熱','發熱更慢、過熱恢復更快',25],['cargo','貨艙','一趟能裝更多礦',25],['armor','外殼','承受岩漿和毒氣',25]];
 const mupMax=k=>MUP.find(u=>u[0]===k)[3];
 const MUP_ORE=['coal','coal','cu','cu','fe','fe','ag','ag','au','au','em','em','ru','ru','ru','di','di','di','di','core'];
 const mupCost=lv=>({ore:MUP_ORE[Math.min(lv,MUP_ORE.length-1)],n:4+Math.ceil(lv*1.5)+(lv>=19?(lv-18)*3:0)});
@@ -2267,7 +2318,7 @@ function payOre(t,n){for(const k of oreFrom(t)){const u=Math.min(n,Math.floor(S.
 const mPower=()=>1.32**S.mine.drill*(1+TA('mdrill'))*TM('mdrillx');
 // 升級面板用：某個等級的數值（現在 → 下一級）
 const mPw=L=>1.32**L*(1+TA('mdrill'))*TM('mdrillx'),mRc=L=>Math.max(0,Math.floor(45*Math.log(mPw(L)/STUCK)/Math.log(1.32)));
-const MUPV={drill:['力量',L=>{const p=mPw(L);return'x'+(p<10?p.toFixed(2):fmt(p))}],fuel:['速度',L=>'x'+(1+.14*L).toFixed(2)],cool:['發熱',L=>'-'+Math.round(Math.min(.9,.06*L)*100)+'%'],cargo:['貨艙',L=>(12+5*L)+' 格'],armor:['外殼',L=>''+(100+60*L)]};
+const MUPV={drill:['力量',L=>{const p=mPw(L);return'x'+(p<10?p.toFixed(2):fmt(p))}],fuel:['速度',L=>'x'+(1+.14*L).toFixed(2)],cool:['發熱',L=>'-'+Math.round((L<=15?.06*L:Math.min(.95,.9+.005*(L-15)))*100)+'%'],cargo:['貨艙',L=>(12+5*L)+' 格'],armor:['外殼',L=>''+(100+60*L)]};
 const MUPI={drill:['#ffb02e','<svg viewBox="0 0 24 24" width="24" height="24"><rect x="7" y="2" width="10" height="8" rx="2" fill="#fff"/><path d="M6 11h12l-6 11z" fill="#fff"/><path d="M8 14l8 1M9 17l6 1" stroke="#ffb02e" stroke-width="1.6"/></svg>'],
   fuel:['#5b8def','<svg viewBox="0 0 24 24" width="24" height="24"><circle cx="12" cy="12" r="7" fill="none" stroke="#fff" stroke-width="3" stroke-dasharray="3 2.5"/><circle cx="12" cy="12" r="3" fill="#fff"/></svg>'],
   cool:['#36b3d6','<svg viewBox="0 0 24 24" width="24" height="24"><path d="M12 3v18M4.2 7.5l15.6 9M4.2 16.5l15.6-9" stroke="#fff" stroke-width="2.4" stroke-linecap="round"/></svg>'],
@@ -2277,10 +2328,10 @@ const mReach=()=>Math.max(0,Math.floor(45*Math.log(mPower()/STUCK)/Math.log(1.32
 const mSpeed=()=>1+.14*S.mine.fuel;
 const mCargo=()=>12+5*S.mine.cargo;
 const mHull=()=>100+60*S.mine.armor;
-const mHeatRes=()=>Math.min(.9,.06*S.mine.cool);
+const mHeatRes=()=>S.mine.cool<=15?.06*S.mine.cool:Math.min(.95,.9+.005*(S.mine.cool-15));
 const mHeatMax=()=>Math.round(100*(1+TA('mfuel')));
 const oreSell=t=>Math.ceil(ORE[t][3]*Math.max(1,per()*.2)*(1+TA('osell')));
-const wnutr=()=>S.tree.lv<20?0:Math.ceil(6*1.19**(S.tree.lv-20)*TM('wcost'));   // 大樹 Lv 20 起澆水也要養分（樹靈冒險取得）
+const wnutr=()=>S.tree.lv<20?0:Math.ceil(6*1.19**Math.min(30,S.tree.lv-20)*1.07**Math.max(0,S.tree.lv-50)*TM('wcost')*TM('wnut'));   // Lv 50 以後養分花費長得比較慢   // 大樹 Lv 20 起澆水也要養分（樹靈冒險取得）
 const wwater=()=>S.tree.lv<10?0:Math.ceil((2+(S.tree.lv-10)*.8+1.1**(S.tree.lv-10))*TM('wwat')*TM('wcost'));   // 澆一次水需要的水（大樹 Lv 10 起）
 
 // 鑽頭外觀：機身四段顏色（亮→暗）、鑽頭材質、怎麼解鎖（礦石／寶石／到達某張地圖）
@@ -2574,9 +2625,10 @@ function mhud(){if(!mw)return;const hm=mHeatMax(),ratio=mPower()/hardAt(mw.m);
 function mui(){
   $('mcoins').textContent=fmt(ORES.reduce((a,o)=>a+Math.floor(S.ore[o[0]]||0),0));$('mwater').textContent=fmt(S.water);$('mfos').textContent=fmt(S.fossil);$('mseed').textContent=fmt(S.aseed);
   const seen=k=>(S.ore[k]||0)>0||ZONES.some((z,i)=>i<=S.mine.maxL&&z.p[k]);
-  $('minv').innerHTML=ORES.map((o,i)=>{const n=Math.floor(S.ore[o[0]]||0),sn=seen(o[0]),nx=ORES[i+1],can=nx&&seen(nx[0]);
+  $('minv').innerHTML=ORES.map((o,i)=>{const n=Math.floor(S.ore[o[0]]||0),sn=seen(o[0]),nx=ORES[i+1],pv=ORES[i-1],can=nx&&seen(nx[0]);
     return '<div class="mi2'+(n?'':' z')+(sn?'':' lk')+'"><i class="gm" style="background:'+o[2]+'"></i><span>'+fmt(n)+'</span><b>'+(sn?o[1]:'？？？')+'</b>'
-      +(can?'<button class="mfu" data-f="'+o[0]+'"'+(n>=FURN?'':' disabled')+' title="'+FURN+' 個'+o[1]+'熔成 1 個'+nx[1]+'"><i class="gm" style="background:'+nx[2]+'"></i>熔成'+nx[1]+'</button>':'')+'</div>'}).join('');
+      +(can?'<button class="mfu" data-f="'+o[0]+'"'+(n>=FURN?'':' disabled')+' title="'+FURN+' 個'+o[1]+'熔成 1 個'+nx[1]+'"><i class="gm" style="background:'+nx[2]+'"></i>熔成'+nx[1]+'</button>':'')
+      +(pv&&sn?'<button class="mfu dec" data-d="'+o[0]+'"'+(n>=1?'':' disabled')+' title="1 個'+o[1]+'分解成 '+DEC+' 個'+pv[1]+'"><i class="gm" style="background:'+pv[2]+'"></i>分解成'+pv[1]+'</button>':'')+'</div>'}).join('');
   $('mups').innerHTML=MUP.map(u=>{const k=u[0],lv=S.mine[k],c=mupCost(lv),mx2=lv>=u[3],have=orePool(c.ore),ok=!mx2&&have>=c.n,st=MUPV[k];
     const val=st[0]+' <em>'+st[1](lv)+'</em>'+(mx2?'':' → <span class="nx">'+st[1](lv+1)+'</span>')+(k==='drill'?'<br>可到 <em>約 '+mRc(lv)+'m</em>'+(mx2?'':' → <span class="nx">'+mRc(lv+1)+'m</span>'):'');
     return '<div class="mu'+(mx2?' max':'')+'"><div class="ic" style="background:'+MUPI[k][0]+'">'+MUPI[k][1]+'</div><div class="tt"><b>'+u[1]+'</b><i>Lv '+lv+'/'+u[3]+'</i></div>'
@@ -2587,12 +2639,15 @@ function mui(){
   $('mqcoins').textContent=fmt(S.coins);skinUI();
 }
 // 熔爐：4 個礦石熔成 1 個上一級的礦石，讓前面的礦到後期也有用（按住或連點就一直熔）
-const FURN=4;
+const FURN=4,DEC=2;
+// 分解：1 個礦石拆成 2 個下一級的礦石，缺低級礦升級時用（來回熔、拆都會虧，不能用來刷）
+function decomp(t,all){const i=ORES.findIndex(o=>o[0]===t),pv=ORES[i-1];if(!pv)return;const n=Math.floor(S.ore[t]||0),k=all?n:Math.min(1,n);if(!k)return;
+  S.ore[t]-=k;S.ore[pv[0]]=(S.ore[pv[0]]||0)+k*DEC;SFX.coin();mbanner('分解：'+ORE[t][1]+' x'+k+' → '+pv[1]+' x'+k*DEC);save();ui();mui()}
 function furn(t,all){const i=ORES.findIndex(o=>o[0]===t),nx=ORES[i+1];if(!nx)return;const n=Math.floor(S.ore[t]||0),k=all?Math.floor(n/FURN):Math.min(1,Math.floor(n/FURN));if(!k)return;
   S.ore[t]-=k*FURN;S.ore[nx[0]]=(S.ore[nx[0]]||0)+k;SFX.coin();mbanner('熔爐：'+ORE[t][1]+' x'+k*FURN+' → '+nx[1]+' x'+k);save();ui();mui()}
-$('minv').addEventListener('click',e=>{const f=e.target.closest('button[data-f]');if(furn.lp){furn.lp=false;return}if(f&&!f.disabled){furn(f.dataset.f,e.shiftKey);return}});   // 按住連續熔之後放開，不要再多熔一次
-$('minv').addEventListener('pointerdown',e=>{const f=e.target.closest('button[data-f]');if(!f)return;const t=f.dataset.f;clearTimeout(furn.h);clearInterval(furn.i);
-  furn.lp=false;furn.h=setTimeout(()=>{furn.lp=true;furn.i=setInterval(()=>{if(Math.floor(S.ore[t]||0)<FURN){clearInterval(furn.i);return}furn(t)},90)},420)});
+$('minv').addEventListener('click',e=>{const f=e.target.closest('button[data-f]'),d=e.target.closest('button[data-d]');if(furn.lp){furn.lp=false;return}if(f&&!f.disabled){furn(f.dataset.f,e.shiftKey);return}if(d&&!d.disabled){decomp(d.dataset.d,e.shiftKey);return}});   // 按住連續熔之後放開，不要再多熔一次
+$('minv').addEventListener('pointerdown',e=>{const f=e.target.closest('button[data-f],button[data-d]');if(!f)return;const isD=!!f.dataset.d,t=f.dataset.f||f.dataset.d;clearTimeout(furn.h);clearInterval(furn.i);
+  furn.lp=false;furn.h=setTimeout(()=>{furn.lp=true;furn.i=setInterval(()=>{if(Math.floor(S.ore[t]||0)<(isD?1:FURN)){clearInterval(furn.i);return}isD?decomp(t):furn(t)},90)},420)});
 for(const ev of['pointerup','pointerleave','pointercancel'])$('minv').addEventListener(ev,()=>{clearTimeout(furn.h);clearInterval(furn.i)});
 $('minv').addEventListener('click',e=>{const b=e.target.closest('button[data-s]');if(!b)return;const t=b.dataset.s,n=Math.floor(S.ore[t]||0);if(!n)return;const v=oreSell(t)*n;S.ore[t]-=n;earn(v);SFX.coin();mbanner('賣出 '+ORE[t][1]+' x'+n+'：$'+fmt(v));save();ui();mui()});
 // 全部賣出要按兩次，避免把升級要用的礦賣掉
@@ -2652,7 +2707,7 @@ var SPEC=[
  {id:'whale',n:'浮空鯨',  r:3,el:'天',fx:[['star','a',.06],['auto','a',.15]],d:'轉生星塵・小幫手收益',mv:'sky',sc:1.6,
   t:'在雲上游泳的巨大鯨魚，只會被長得夠高的大樹吸引過來。'}];
 const SPR=[['常見','#7f9f6a',60],['稀有','#4d8fe0',30],['史詩','#8b5cf6',8],['傳說','#e09a00',2]];
-const SPMAX=15,SPBRK=10,AWMAX=5;   // Lv 10 以後是「突破」，要養分
+const SPMAX=20,SPBRK=10,AWMAX=5;   // Lv 10 以後是「突破」，要養分
 const spOf=id=>SPEC.find(s=>s.id===id);
 const spOwn=id=>S.sp.own[id];
 const spBoost=()=>1+TA('spb');
@@ -3264,7 +3319,7 @@ function svMapBg(){const c=svx(),z=SV.z,W2=SV.W2,H2=SV.H2,t=performance.now()/10
   for(let k=0;k<9;k++){const sp=6+k%3*5,x=((k*157+t*sp)%(W2+260))-130,y=H2*(.08+k*.105),r=26+(k%4)*10;c.fillStyle='rgba(255,255,255,'+(.18+(k%3)*.08)+')';c.beginPath();c.arc(x,y,r,0,7);c.arc(x+r*.9,y+r*.2,r*.8,0,7);c.arc(x-r*.9,y+r*.25,r*.7,0,7);c.fill()}
   c.fillStyle='rgba(255,255,255,.7)';c.beginPath();c.moveTo(0,H2);for(let x=0;x<=W2;x+=24)c.lineTo(x,H2*.93+Math.sin(x/38+t*.8)*6);c.lineTo(W2,H2);c.fill()}
 function svEnd(win){const b=SV;b.over=true;cancelAnimationFrame(svRaf);const first=win&&b.zi>=S.adv.cl;
-  let nut=Math.round((win?b.nut:b.nut*.5)*(1+.15*wingL('bag')));if(first)nut*=2;S.nutr=(S.nutr||0)+nut;let ex='';const fo=b.fos||0;if(fo){S.fossil+=fo;ex+='・化石 +'+fo}if(first){S.adv.arr={i:b.zi};S.adv.cl=b.zi+1;S.gems+=3;S.fossil+=2;ex+='・寶石 +3・首通化石 +2'}
+  let nut=Math.round((win?b.nut:b.nut*.5)*(1+.15*wingL('bag')+TA('nutg')));if(first)nut*=2;S.nutr=(S.nutr||0)+nut;let ex='';const fo=b.fos||0;if(fo){S.fossil+=fo;ex+='・化石 +'+fo}if(first){S.adv.arr={i:b.zi};S.adv.cl=b.zi+1;S.gems+=3;S.fossil+=2;ex+='・寶石 +3・首通化石 +2'}
   save();ui();win?SFX.ach():SFX.fail();$('svmap').hidden=true;$('svlv').hidden=true;
   $('svend').innerHTML='<div class="bres '+(win?'win':'lose')+'"><b>'+(win?'整區淨化！':'撤退了…')+'</b><p>'+b.z.n+(first?'　第一次淨化，下一區開放了<br>這座島會飄到你的大樹旁邊，回去看看':'')+'</p><p class="brw">養分 +'+nut+ex+'</p><p class="soft">走過 '+b.isl+' 座島・Lv '+b.lv+'・擊敗 '+b.kills+'</p>'
     +(win?'':'<p class="soft">撤退只能帶回一半的養分。升級樹靈、換不同的隊伍再試試看</p>')+'<button id="btback" class="go">回到冒險</button></div>';$('svend').hidden=false}
