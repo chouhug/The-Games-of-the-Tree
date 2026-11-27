@@ -1874,12 +1874,13 @@ function buildTree(lv){
   for(const l of leaves){lo=Math.min(lo,l.c[1]);hi=Math.max(hi,l.c[1]);cr=Math.max(cr,Math.hypot(l.c[0]-cc[0],l.c[2]-cc[2])+l.r)}
   for(const l of leaves){const v=[l.c[0]-cc[0],l.c[1]-cc[1],l.c[2]-cc[2]],m=Math.hypot(...v)||1,dl=(v[0]*LD[0]+v[1]*LD[1]+v[2]*LD[2])/m,h=hi>lo?(l.c[1]-lo)/(hi-lo):1,out=Math.min(1,m/(cr*.8));
     l.inner=m+l.r<cr*.55&&leaves.length>40;l.sh=.75+.24*Math.max(0,dl)-.08*Math.max(0,-dl)+.1*h+.08*out}
+  if(lv>=40&&lv<55)for(const l of leaves)l.sh*=1.2;   // 天空之樹：雲白色的葉子要亮一點，不然打上陰影會變灰
   // 葉團＝低多邊形的球，朝上的面用亮綠、朝下的面用深綠
   for(const l of leaves){const c=leafCols(lv,l.id);l.col=c;const cf=n=>[n[1]>.5?c[1]:n[1]<-.35?c[2]:c[0],l.sh];l.m=icoMesh(l.c[0],l.c[1],l.c[2],l.r,.86,l.id,cf,.34);
     // 遠一點的葉團用面數少的版本（八面體），看起來差不多但畫得快很多
     const a0=hr(l.id*5+3)*Math.PI;l.m2=mkMesh([[1,0,0],[-1,0,0],[0,1,0],[0,-1,0],[0,0,1],[0,0,-1]].map((q,i)=>{const k=l.r*1.12*(1+(hr(l.id*13+i)-.5)*.3),x=q[0]*Math.cos(a0)-q[2]*Math.sin(a0),z=q[0]*Math.sin(a0)+q[2]*Math.cos(a0);return[l.c[0]+x*k,l.c[1]+q[1]*k*.86,l.c[2]+z*k]}),[[0,2,4],[4,2,1],[1,2,5],[5,2,0],[0,4,3],[4,1,3],[1,5,3],[5,0,3]],cf)}
   // 樹枝＝會越來越細的六角柱，太細的就用線畫
-  for(const g2 of segs){const col=lv>=30?'#6b4a7a':g2.d<2?'#6b4226':'#7d5233';g2.col=col;g2.rb=g2.root?g2.r*.35:g2.r*.62;
+  for(const g2 of segs){const col=trunkCol(lv,g2.d);g2.col=col;g2.rb=g2.root?g2.r*.35:g2.r*.62;
     if(g2.r>.05||GLON){const d=nrm(sub3(g2.b,g2.a)),bk=g2.d>0&&!g2.root?g2.r*.7:0,ex=g2.rb*.5,a=[g2.a[0]-d[0]*bk,g2.a[1]-d[1]*bk,g2.a[2]-d[2]*bk],b=[g2.b[0]+d[0]*ex,g2.b[1]+d[1]*ex,g2.b[2]+d[2]*ex];g2.m=prismMesh(a,b,g2.r,g2.rb,g2.r>.2?8:6,()=>[col,g2.root?.9:1])}}
   return{segs,leaves,top:Math.max(1,top),cc,cr};
 }
@@ -1948,12 +1949,40 @@ function ground(){
   if(NIGHT)for(const o of DECO)if(o[0]==='lamp'){const c=P(o[1],0,o[2]);if(c[2]<NEAR)continue;const r=2.6*c[3],g=hx.createRadialGradient(c[0],c[1],0,c[0],c[1],r);g.addColorStop(0,'rgba(255,214,120,.32)');g.addColorStop(1,'rgba(255,214,120,0)');polyW(Array.from({length:20},(_,i)=>{const t=i/20*Math.PI*2;return[o[1]+Math.cos(t)*2.6,.01,o[2]+Math.sin(t)*2.6]}),g)}
   gateGround();
 }
+// 每個型態的葉子顏色（[本色, 受光面, 背光面]），讓樹看起來跟名字一樣
 function leafCols(lv,id){
-  if(lv>=30)return ['#2fbf9b','#7ff0d0','#1b8a70'];
-  if(lv>=10&&lv<15&&hr(id*13)>.45)return ['#ff9ec4','#ffd3e4','#e0709c'];
-  if(lv>=20)return ['#3e9e4a','#7fd17a','#2a6e34'];
-  return [['#4caf50','#86d97a','#2e7d32'],['#5cbf4f','#9be38a','#3a8f35']][id%2];
+  if(lv>=80){const P=[['#b06cff','#e0b8ff','#7a3fc0'],['#ff7ad9','#ffc2ee','#c0459f'],['#5ce1ff','#c4f5ff','#2a9fc0']];return P[id%3]}   // 宇宙之樹：星雲色
+  if(lv>=70)return hr(id*7)>.3?['#ffcf4d','#fff0a0','#d99a1a']:['#ffe27a','#fffbd6','#e0b030'];   // 永恆之樹：金色
+  if(lv>=55)return hr(id*7)>.25?['#3b3f9e','#6c74e0','#252870']:['#5a4fc0','#8f86f0','#36308a'];   // 星辰之樹：夜空靛藍
+  if(lv>=40)return hr(id*7)>.35?['#e4f6ff','#ffffff','#a8d8f2']:['#f2fbff','#ffffff','#bfe2f5'];   // 天空之樹：雲白
+  if(lv>=30)return ['#2fbf9b','#7ff0d0','#1b8a70'];   // 世界樹：青綠
+  if(lv>=20)return hr(id*7)>.2?['#2f7a3a','#5fae5a','#1d5226']:['#4a7a2a','#7fa84a','#2f5218'];   // 神木：深綠帶苔色
+  if(lv>=15)return [['#4caf50','#86d97a','#2e7d32'],['#6cbf3f','#a8e07a','#468a28']][id%2];   // 結果的樹
+  if(lv>=10&&hr(id*13)>.4)return hr(id*5)>.5?['#ff9ec4','#ffd3e4','#e0709c']:['#ffffff','#ffffff','#f0d0dc'];   // 開花的樹：粉紅和白花
+  if(lv>=6)return [['#3f9f45','#79cc6c','#277030'],['#4caf50','#86d97a','#2e7d32']][id%2];   // 大樹：比較深
+  if(lv>=3)return [['#4caf50','#86d97a','#2e7d32'],['#5cbf4f','#9be38a','#3a8f35']][id%2];   // 小樹
+  return ['#8fdc6a','#c4f2a0','#5fae45'];   // 幼苗：嫩綠
 }
+// 樹幹顏色
+const trunkCol=(lv,d)=>lv>=80?(d<2?'#2a2240':'#3a3058'):lv>=70?(d<2?'#8a6a3a':'#a8844a'):lv>=55?(d<2?'#3a3550':'#4a4468'):lv>=40?(d<2?'#b9a58c':'#cbb9a0'):lv>=30?(d<2?'#6b5a48':'#7d6a55'):lv>=20?(d<2?'#5a3a22':'#6b4a2e'):(d<2?'#6b4226':'#7d5233');
+// 型態專屬的裝飾：神木的注連繩、天空之樹的雲、宇宙之樹的行星
+function treeExtras(items,lv,wd){if(!TREE||lv<20)return;const T=TREE,g=Math.min(1.25,.35+lv/32);
+  if(!T.ext){T.ext={};
+    if(lv<30){const y=1.1*g,R=.34*g*1.1,N=14,ring=[];for(let k=0;k<N;k++){const a=k/N*Math.PI*2,b=(k+1)/N*Math.PI*2;ring.push(prismMesh([Math.cos(a)*R,y+Math.sin(a*3)*.02,Math.sin(a)*R],[Math.cos(b)*R,y+Math.sin(b*3)*.02,Math.sin(b)*R],.07,.07,5,()=>['#e8d9a8',1]))}
+      T.ext.rope=ring;T.ext.shide=[0,1.57,3.14,4.71].map(a=>{const x=Math.cos(a)*R*1.05,z=Math.sin(a)*R*1.05,tx=-Math.sin(a)*.09,tz=Math.cos(a)*.09;return[[x-tx,y-.04,z-tz],[x+tx,y-.04,z+tz],[x+tx,y-.22,z+tz],[x-tx,y-.2,z-tz]]})}
+    if(lv>=40&&lv<55)T.ext.puff=icoMesh(0,0,0,.95,.6,99,n=>['#ffffff',n[1]>.3?1.1:.95],.2);
+    if(lv>=80)T.ext.planets=[['#ffb347',.32],['#5ce1ff',.24],['#ff7ad9',.2]].map((q,i)=>icoMesh(0,0,0,q[1],1,500+i,n=>[q[0],n[1]>.3?1.15:.9],.08))}
+  const E=T.ext;
+  if(E.rope){for(const m of E.rope)emitMesh(items,m,0,0,0);for(const q of E.shide)emitQuad(items,q,'#ffffff')}
+  if(E.puff){for(let k=0;k<4;k++){const a=hT*.15+k*1.57,r=T.cr*1.05,y=T.top*(.55+.12*(k%2));emitMesh(items,E.puff,T.cc[0]+Math.cos(a)*r,y,T.cc[2]+Math.sin(a)*r)}}
+  if(E.planets){E.planets.forEach((m,k)=>{const a=hT*(.3+k*.12)+k*2.1,r=T.cr*(1.1+k*.18),y=T.top*(.62+k*.1);emitMesh(items,m,T.cc[0]+Math.cos(a)*r,y,T.cc[2]+Math.sin(a)*r*.8)})}}
+// 型態專屬的光（畫在最上層）：光暈顏色、星辰之樹和宇宙之樹的星光
+function treeGlow(lv){if(lv<30)return;const p=P(0,TREE.top*.6,0),r=TREE.top*.8*p[3];if(p[2]<NEAR)return;
+  const col=lv>=80?'255,150,230':lv>=70?'255,215,90':lv>=55?'150,140,255':lv>=40?'220,240,255':'255,240,170',a=lv>=70?.38:.25;
+  const g=hx.createRadialGradient(p[0],p[1],0,p[0],p[1],r);g.addColorStop(0,'rgba('+col+','+a+')');g.addColorStop(1,'rgba('+col+',0)');hx.fillStyle=g;hx.fillRect(p[0]-r,p[1]-r,r*2,r*2);
+  if(lv>=55){for(let k=0;k<Math.min(40,TREE.leaves.length);k++){const L=TREE.leaves[(k*7)%TREE.leaves.length],tw=Math.sin(hT*3+k*1.7);if(tw<.2)continue;const q=P(L.c[0]+(hr(k)-.5)*L.r,L.c[1]+(hr(k+9)-.5)*L.r,L.c[2]+(hr(k+3)-.5)*L.r);if(q[2]<NEAR)continue;
+    const s=(2+tw*3)*Math.min(2,q[3]/30);hx.fillStyle=lv>=80?'#fff0fb':'#ffffff';hx.globalAlpha=tw;hx.beginPath();hx.moveTo(q[0],q[1]-s*2);hx.lineTo(q[0]+s*.4,q[1]-s*.4);hx.lineTo(q[0]+s*2,q[1]);hx.lineTo(q[0]+s*.4,q[1]+s*.4);hx.lineTo(q[0],q[1]+s*2);hx.lineTo(q[0]-s*.4,q[1]+s*.4);hx.lineTo(q[0]-s*2,q[1]);hx.lineTo(q[0]-s*.4,q[1]-s*.4);hx.fill()}hx.globalAlpha=1}
+  if(lv>=70){for(let k=0;k<14;k++){const a=hT*.4+k*.45,rr=TREE.cr*(.6+hr(k)*.6),y=TREE.top*(.2+((hT*.12+hr(k+5))%1)*.8),q=P(Math.cos(a)*rr,y,Math.sin(a)*rr);if(q[2]<NEAR)continue;hx.fillStyle=lv>=80?'rgba(255,200,250,.8)':'rgba(255,230,140,.85)';hx.beginPath();hx.arc(q[0],q[1],Math.max(1.5,q[3]*.04),0,7);hx.fill()}}}
 function drawLeaf(L,p,lv){const r=L.r*p[3],c=leafCols(lv,L.id),n=7,rot=L.id,b=L.sh||1,fz=p[2];
   const pts=k=>Array.from({length:n},(_,i)=>{const a=i/n*Math.PI*2+rot;return[p[0]+Math.cos(a)*r*k,p[1]+Math.sin(a)*r*k]});
   poly(pts(1),lit(c[2],b*.92,fz));                                                   // 背光的底
@@ -2002,7 +2031,7 @@ function hframe(ts){
       const p=P(f.x+sw+swing,f.y,f.z);if(p[2]>NEAR){const r=Math.max(14,f.R*p[3]*1.4);hits.push({k:'fruit',x0:p[0]-r,x1:p[0]+r,y0:p[1]-r,y1:p[1]+r,z:p[2]>0?-1+p[2]*1e-4:-1})}}}
   // 地上的小花
   for(let k=0;k<18;k++){const a=hr(k+400)*Math.PI*2,rad=3.2+hr(k+500)*8.5,x=Math.cos(a)*rad,z=Math.sin(a)*rad,p=P(x,0,z),t=P(x+Math.sin(hT*1.5+k)*.03,.38,z);if(p[2]<NEAR||t[2]<NEAR)continue;t.push(x,z);items.push({z:p[2],f(){flower(p,k,t)}})}
-  deco(items,night);gateItems(items);nestDraw(items);spDraw(items);
+  treeExtras(items,lv,wd);deco(items,night);gateItems(items);nestDraw(items);spDraw(items);
   // 落葉
   if(lv>0&&fallLeaves.length<18&&Math.random()<dt*2){const L=TREE.leaves[Math.floor(Math.random()*TREE.leaves.length)];if(L)fallLeaves.push({x:L.c[0],y:L.c[1],z:L.c[2],vx:(Math.random()-.5)*.6,c:leafCols(lv,L.id)[0],r:Math.random()*6})}
   for(const l of fallLeaves){l.y-=dt*.7;l.x+=Math.sin(hT*2+l.r)*dt*.5+l.vx*dt;const t=hT*2.2+l.r,u=nrm([Math.cos(t),Math.sin(t*1.3)*.7,Math.sin(t)]),w=nrm(crs(u,[.3,1,.2])),A=.14,B=.06;
@@ -2016,7 +2045,7 @@ function hframe(ts){
   placeBtns(dt);
   if(wiggle>0)wiggle=Math.max(0,wiggle-dt*.9);
   // 世界樹的光暈
-  if(lv>=30){const p=P(0,TREE.top*.6,0),r=TREE.top*.8*p[3];const g=hx.createRadialGradient(p[0],p[1],0,p[0],p[1],r);g.addColorStop(0,'rgba(255,240,170,.25)');g.addColorStop(1,'rgba(255,240,170,0)');hx.fillStyle=g;hx.fillRect(p[0]-r,p[1]-r,r*2,r*2)}
+  treeGlow(lv);
   for(const r of hrings){r.t+=dt;const k=r.t/.8;hx.strokeStyle='rgba(255,225,77,'+Math.max(0,1-k)+')';hx.lineWidth=5*(1-k)+1;hx.beginPath();hx.arc(r.x,r.y,20+k*160,0,7);hx.stroke()}
   hrings=hrings.filter(r=>r.t<.8);
   hx.textAlign='center';for(const f of hfloats){f.t+=dt;hx.globalAlpha=Math.max(0,1-f.t/1.4);hx.font='800 20px "Baloo 2","Noto Sans TC",sans-serif';hx.lineWidth=4;hx.strokeStyle='rgba(0,0,0,.4)';hx.strokeText(f.s,f.x,f.y-f.t*40);hx.fillStyle=f.c||'#fff';hx.fillText(f.s,f.x,f.y-f.t*40)}
